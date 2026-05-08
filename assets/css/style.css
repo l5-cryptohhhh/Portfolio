@@ -1,4 +1,6 @@
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
@@ -7,7 +9,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
 
-html, body {
+html,
+body {
     font-family: "Roboto", sans-serif;
     margin: 0;
     box-sizing: border-box;
@@ -22,17 +25,22 @@ header {
     background-position: center;
     width: 100%;
     text-align: center;
-    align-items: center; 
+    align-items: center;
     height: 400px;
-    display: inline-block; 
+    display: inline-block;
 }
 
-header h1{
+header h1 {
     color: white;
     font-size: 3em;
 }
 
-header h3{
+h1,
+h2 {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+}
+
+header h3 {
     color: white;
     font-size: 0.9em;
 }
@@ -42,22 +50,25 @@ nav li {
     list-style: none;
     margin: 0 4px;
     border-radius: 4px;
-     display: inline-flex;
+    display: inline-flex;
     align-items: center;
     text-decoration: none;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 16px;
     font-weight: 600;
-    padding: 10px 18px;
+    padding: 25px 32px;
 }
 
 
 nav a:hover {
     color: #111110;
-    background-color: rgb(218, 243, 27);
+    background-color: #FFD700;
     border-radius: 4px;
     margin: 0 auto;
 }
+
+
+
 
 nav a {
     color: white;
@@ -67,7 +78,8 @@ nav a {
     box-shadow: 2px;
 }
 
-main, form {
+main,
+form {
     max-width: 920px;
     margin: 0 auto;
     padding: 40px 20px;
@@ -83,10 +95,6 @@ main section {
     padding-top: 0;
 }
 
-main section h2::before {
-    content:"- ";
-    color: gold;
-}
 
 .image img {
     width: 110px;
@@ -120,12 +128,15 @@ form {
 }
 
 
-input::placeholder, textarea::placeholder {
+input::placeholder,
+textarea::placeholder {
     color: #d3d2d2dc;
     font-style: italic;
 }
 
-input:hover, textarea:hover, select:hover {
+input:hover,
+textarea:hover,
+select:hover {
     background-color: #e0e0e0;
 }
 
@@ -137,6 +148,14 @@ button {
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0, 0, 0.1);
     padding: 15px 50px;
+    align-items: center;
+    font-size: 0.9em;
+}
+
+span {
+    font-size: 0.5rem;
+    align-items: center;
+    margin: 0 auto;
 }
 
 
@@ -144,17 +163,22 @@ button:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0.15);
 }
 
-.comp li:nth-child(odd) {
-    background-color: #0246902b;
-}   
-
-.comp li:first-child {
-    font-weight: bold;
+.comp span {
+    color: #102D4D;
+    font-size: 0.9em;
+    text-align: left;
 }
+
+
 
 #project {
     background-color: rgb(241, 230, 8, 0.35);
     background-size: auto;
+}
+
+
+#portfolio {
+    background-color: rgb(241, 230, 8, 0.35);
 }
 
 
@@ -165,8 +189,17 @@ footer {
     color: white;
 }
 
-footer p{
+footer p {
     padding-top: 70px;
+}
+
+
+footer i {
+    font-size: 3em;
+    border-radius: 5px;
+    margin: 0 auto;
+    text-align: center;
+    align-items: center;
 }
 
 
@@ -175,7 +208,7 @@ footer p{
 #project h3::after {
     content: "NEW";
     display: inline-block;
-    padding:2px 8px;
+    padding: 2px 8px;
     margin-right: 12px;
     color: white;
     background-color: red;
@@ -185,7 +218,9 @@ footer p{
 }
 
 
-#project, #card, #portfolio {
+#project,
+#card,
+#portfolio {
     padding: 32px;
     margin-bottom: 24px;
     border: 1px solid #e0e0e0;
@@ -194,13 +229,24 @@ footer p{
     padding-top: 0;
 }
 
+
+#card {
+    border-left: 4px solid #FFD700;
+}
+
+
+
+#project, #portfolio {
+    border-left: 4px solid #24036c;
+}
+
 .other {
     display: block;
     justify-content: center;
     gap: 12px;
     margin-top: 20px;
     margin: 20px;
-} 
+}
 
 
 main a {
@@ -216,9 +262,34 @@ main a {
 }
 
 main a:hover {
-background-color: #102D4D;
-color: #e0e0e0;
+    background-color: #102D4D;
+    color: #e0e0e0;
 }
+
+
+.comp {
+     width: 100%;
+    border-collapse: collapse;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-top: 10px;
+}
+
+
+.comp thead {
+    background-color: rgba(245, 245, 220, 0.832);
+    color: #105aa8;
+}
+
+
+.comp table th {
+    padding: 15px;
+   border-bottom: 1px solid #ddd;
+   text-align: left;
+}
+
+
+
+
 
 
 .experience {
@@ -233,21 +304,51 @@ color: #e0e0e0;
     color: #105aa8;
 }
 
+
 .experience table th {
     padding: 15px;
     font-weight: 600;
-    font-size: 0,9rem;
-    text-align: left;
+    font-size: 0, 9rem;
+    text-align: center;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
-.experience table td {
+.experience table tr {
     padding: 15px;
-    border-bottom: 2px solid #edf2f7;
+    border-bottom: 1px solid #141516;
     font-size: 0.95rem;
 
 
 }
 
 
+.material-symbols-outlined {
+    color: white;
+    padding-left: 20px;
+}
+
+
+#chi-sono span {
+color: #FFD700;
+}
+
+
+#competenze span {
+color: #FFD700;
+}
+
+
+#esperienze span {
+color: #FFD700;
+}
+
+
+#progetti span {
+color: #FFD700;
+}
+
+
+#contatti span {
+color: #FFD700;
+}
