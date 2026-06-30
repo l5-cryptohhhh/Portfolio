@@ -29,6 +29,7 @@
             </button>
             <ul id="nav-menu">
                 <li><a href="#chi-sono">Chi sono</a></li>
+                <li><a href="#attestati">Attestati</a></li>
                 <li><a href="#competenze">Competenze</a></li>
                 <li><a href="#progetti">Progetti</a></li>
                 <li><a href="#contatti">Contatti</a></li>
@@ -100,6 +101,21 @@
                         </div>
                     </dl>
                 </div>
+            </div>
+        </section>
+
+        <!-- Attestati -->
+        <section id="attestati">
+            <div class="wrap">
+                <div class="sec-head" data-reveal>
+                    <div class="head-row">
+                        <h2>Attestati</h2>
+                        <button class="add-icon-btn" type="button" data-add-cert
+                            aria-label="Aggiungi attestato"><i class="bi bi-plus-lg"></i></button>
+                    </div>
+                    <p>Certificati e diplomi. Premi + per caricarne uno; clicca la card per aprirlo.</p>
+                </div>
+                <div class="project-grid" data-certs></div>
             </div>
         </section>
 
@@ -266,6 +282,33 @@
 
                 <div class="modal-actions">
                     <button type="button" id="annulla-project-btn" class="btn btn-ghost">Annulla</button>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-plus-lg"></i>Aggiungi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modale nuovo attestato -->
+    <div id="cert-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="cert-modal-title"
+        aria-hidden="true">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="cert-modal-title">Nuovo attestato</h3>
+                <button id="close-cert-btn" type="button" aria-label="Chiudi"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <p class="modal-sub">Carica il file e scrivi una frase che lo descrive.</p>
+            <form id="cert-form" novalidate>
+                <label for="cert-label">Descrizione *</label>
+                <input type="text" id="cert-label" name="label" placeholder="Es. Diploma Full-Stack Epicode" required
+                    maxlength="80">
+                <p class="field-error" data-error-for="cert-label"></p>
+
+                <label for="cert-file">File (PDF o immagine) *</label>
+                <input type="file" id="cert-file" name="file" accept="application/pdf,image/*" required>
+                <p class="field-error" data-error-for="cert-file"></p>
+
+                <div class="modal-actions">
+                    <button type="button" id="annulla-cert-btn" class="btn btn-ghost">Annulla</button>
                     <button type="submit" class="btn btn-primary"><i class="bi bi-plus-lg"></i>Aggiungi</button>
                 </div>
             </form>

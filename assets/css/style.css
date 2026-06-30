@@ -703,6 +703,86 @@ section[id] {
     color: var(--muted);
 }
 
+/* ── Attestati ───────────────────────────────────────────── */
+.head-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.head-row h2 {
+    margin: 0;
+}
+
+.add-icon-btn {
+    flex: none;
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 1px solid var(--accent-line);
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 1.15rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, transform 0.18s var(--ease-out);
+}
+
+.add-icon-btn:hover {
+    background: var(--accent);
+    color: var(--accent-ink);
+    transform: scale(1.06);
+}
+
+.add-icon-btn:active {
+    transform: scale(0.96);
+}
+
+.cert-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 170px;
+    padding: 26px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: border-color 0.25s, transform 0.25s var(--ease-out);
+}
+
+.cert-card:hover {
+    border-color: var(--accent-line);
+    transform: translateY(-4px);
+}
+
+.cert-ic {
+    font-size: 2rem;
+    color: var(--accent);
+}
+
+.cert-card h3 {
+    font-size: 1.15rem;
+}
+
+.cert-open {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.cert-card:hover .pc-remove,
+.cert-card .pc-remove:focus-visible {
+    opacity: 1;
+}
+
 /* ── Contact ─────────────────────────────────────────────── */
 .contact {
     text-align: center;
@@ -984,17 +1064,35 @@ footer {
 }
 
 /* ── Responsive ──────────────────────────────────────────── */
-@media (max-width: 860px) {
+/* Hero stacks early: the 0.8fr image column gets too narrow before this */
+@media (max-width: 900px) {
+    .hero {
+        text-align: center;
+    }
+
     .hero .wrap {
         grid-template-columns: 1fr;
-        gap: 40px;
+        gap: 36px;
+        justify-items: center;
+    }
+
+    .hero-kicker,
+    .hero-actions {
+        justify-content: center;
+    }
+
+    .hero-lead {
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .hero-portrait {
         order: -1;
-        justify-self: start;
+        justify-self: center;
     }
+}
 
+@media (max-width: 860px) {
     .about-grid {
         grid-template-columns: 1fr;
         gap: 32px;
@@ -1042,7 +1140,7 @@ footer {
     }
 }
 
-@media (max-width: 520px) {
+@media (max-width: 576px) {
     body {
         font-size: 1rem;
     }
@@ -1053,5 +1151,20 @@ footer {
 
     .modal-box {
         padding: 24px;
+    }
+
+    /* Chip no longer floats off the image edge — sits centered under it */
+    .hero-portrait {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .hero-portrait .chip-float {
+        position: static;
+        bottom: auto;
+        left: auto;
+        box-shadow: none;
     }
 }

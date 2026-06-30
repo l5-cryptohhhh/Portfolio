@@ -271,6 +271,165 @@
     }
 
     /* ============================================================
+       Attestati — files stored in IndexedDB (blobs too big for localStorage)
+       ============================================================ */
+    const IDB_NAME = "mn_portfolio";
+    const IDB_STORE = "attestati";
+
+    function openDB() {
+        return new Promise((resolve, reject) => {
+            const req = indexedDB.open(IDB_NAME, 1);
+            req.onupgradeneeded = () => {
+                const db = req.result;
+                if (!db.objectStoreNames.contains(IDB_STORE)) {
+                    db.createObjectStore(IDB_STORE, { keyPath: "id" });
+                }
+            };
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = () => reject(req.error);
+        });
+    }
+
+    async function certPut(rec) {
+        const db = await openDB();
+        return new Promise((res, rej) => {
+            const tx = db.transaction(IDB_STORE, "readwrite");
+            tx.objectStore(IDB_STORE).put(rec);
+            tx.oncomplete = () => res();
+            tx.onerror = () => rej(tx.error);
+        });
+    }
+
+    async function certGetAll() {
+        const db = await openDB();
+        return new Promise((res, rej) => {
+            const tx = db.transaction(IDB_STORE, "readonly");
+            const rq = tx.objectStore(IDB_STORE).getAll();
+            rq.onsuccess = () => res(rq.result || []);
+            rq.onerror = () => rej(rq.error);
+        });
+    }
+
+    async function certDelete(id) {
+        const db = await openDB();
+        return new Promise((res, rej) => {
+            const tx = db.transaction(IDB_STORE, "readwrite");
+            tx.objectStore(IDB_STORE).delete(id);
+            tx.oncomplete = () => res();
+            tx.onerror = () => rej(tx.error);
+        });
+    }
+
+    let certs = [];
+
+    function certCardHTML(c) {
+        return `
+            <article class="cert-card" data-id="${escapeHTML(c.id)}" role="button" tabindex="0"
+                aria-label="Apri ${escapeHTML(c.label)}">
+                <button class="pc-remove" type="button" aria-label="Rimuovi ${escapeHTML(c.label)}">
+                    <i class="bi bi-trash3"></i>
+                </button>
+                <i class="bi bi-patch-check cert-ic"></i>
+                <h3>${escapeHTML(c.label)}</h3>
+                <span class="cert-open">Apri attestato <i class="bi bi-arrow-up-right"></i></span>
+            </article>`;
+    }
+
+    function openCert(id) {
+        const rec = certs.find((c) => c.id === id);
+        if (!rec || !rec.blob) return;
+        const url = URL.createObjectURL(rec.blob);
+        window.open(url, "_blank", "noopener");
+        setTimeout(() => URL.revokeObjectURL(url), 30000);
+    }
+
+    function renderCerts() {
+        const grid = $("[data-certs]");
+        if (!grid) return;
+
+        if (certs.length === 0) {
+            grid.innerHTML = `<p class="projects-empty">Nessun attestato caricato. Premi + per aggiungerne uno.</p>`;
+            return;
+        }
+        grid.innerHTML = certs.map(certCardHTML).join("");
+
+        $$(".cert-card", grid).forEach((card) => {
+            const id = card.dataset.id;
+            const go = (e) => {
+                if (e.target.closest(".pc-remove")) return;
+                openCert(id);
+            };
+            card.addEventListener("click", go);
+            card.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openCert(id); }
+            });
+            const rm = card.querySelector(".pc-remove");
+            rm.addEventListener("click", async (e) => {
+                e.stopPropagation();
+                if (!confirm("Rimuovere questo attestato?")) return;
+                await certDelete(id);
+                certs = certs.filter((c) => c.id !== id);
+                renderCerts();
+            });
+        });
+    }
+
+    function initCerts() {
+        const grid = $("[data-certs]");
+        if (!grid || !("indexedDB" in window)) {
+            if (grid) grid.innerHTML = `<p class="projects-empty">Il tuo browser non supporta il caricamento file.</p>`;
+            return;
+        }
+
+        const overlay = $("#cert-modal");
+        const form = $("#cert-form");
+        const modal = setupModal(overlay, {
+            openers: $$("[data-add-cert]"),
+            closers: [$("#close-cert-btn"), $("#annulla-cert-btn")],
+            onOpen: () => $$("[data-error-for]", overlay).forEach((el) => (el.textContent = ""))
+        });
+
+        if (form) {
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const errLabel = $('[data-error-for="cert-label"]');
+                const errFile = $('[data-error-for="cert-file"]');
+                errLabel.textContent = "";
+                errFile.textContent = "";
+
+                const label = $("#cert-label").value.trim();
+                const file = $("#cert-file").files[0];
+                let ok = true;
+                if (!label) { errLabel.textContent = "Scrivi una descrizione."; ok = false; }
+                if (!file) { errFile.textContent = "Seleziona un file."; ok = false; }
+                if (!ok) return;
+
+                const rec = {
+                    id: "c-" + Date.now().toString(36),
+                    label,
+                    blob: file,
+                    type: file.type,
+                    name: file.name
+                };
+                try {
+                    await certPut(rec);
+                } catch {
+                    errFile.textContent = "Salvataggio non riuscito. File troppo grande?";
+                    return;
+                }
+                certs.unshift(rec);
+                renderCerts();
+                form.reset();
+                modal.close();
+            });
+        }
+
+        certGetAll()
+            .then((list) => { certs = list.reverse(); renderCerts(); })
+            .catch(() => { certs = []; renderCerts(); });
+    }
+
+    /* ============================================================
        Scroll reveal — enhances already-visible content
        ============================================================ */
     function initReveal() {
@@ -334,6 +493,7 @@
     document.addEventListener("DOMContentLoaded", () => {
         initContact();
         initProjects();
+        initCerts();
         initReveal();
         initNav();
     });
