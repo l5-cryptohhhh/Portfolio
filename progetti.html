@@ -1,64 +1,98 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="it" class="no-js">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Progetti</title>
+    <title>Progetti — Manuel Nunziata</title>
+    <meta name="description" content="Tutti i progetti di Manuel Nunziata, full-stack AI developer.">
+    <link rel="icon"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2315141b'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23fb7a5b'/%3E%3C/svg%3E">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link rel="stylesheet" href="assets/css/style.css">
+    <script>
+        document.documentElement.classList.remove('no-js');
+        document.documentElement.classList.add('js');
+    </script>
 </head>
-<main>
+
 <body>
-    <section class="other">
-            <strong>
-                <h2>Progetti</h2>
-            </strong>
-            <p>I lavori fatti durante queste settimane di corso</p> <a href="index.html">TORNA ALLA HOME</a>
-            <div id="project">
-                <h3>Pagina Ricetta</h3>
-                <p>Una pagina con titolo, ingredienti e procedura. Esercizio di markup semantico applicato a un
-                    contenuto
-                    reale
-                </p>
-                <a href="https://github.com/l5-cryptohhhh/index.html/blob/main/index.html2.html">VEDI SU GITHUB</a>
-            </div>
-            <div id="card">
-                <h3>Card di Presentazione</h3>
-                <p>Un biglietto digitale con nome, cognome, link ai social e ruolo. Esercizio di sintesi sulla struttra
-                    HTML. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Vero odit obcaecati dicta non ad
-                    doloremque, iste enim delectus sequi, odio esse adipisci dignissimos mollitia illo velit
-                    accusantium,
-                    distinctio excepturi! Eius. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eos, natus
-                    aliquid
-                    dolorem delectus, tempore deserunt nihil quasi culpa esse voluptatibus beatae itaque iste voluptatum
-                    non
-                    veritatis maiores a quo voluptas.
-                </p>
-                <a href="https://github.com/l5-cryptohhhh/index.html/blob/main/index.html2.html">VEDI SU GITHUB
-                </a>
-            </div>
-            <div id="portfolio">
-                <h3>Portfolio</h3>
-                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eveniet molestias cum sed illo voluptatibus
-                    quis totam nostrum exercitationem aliquam architecto consectetur harum, magnam nemo dolores maxime
-                    repellendus illum, culpa ipsa? Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum quidem
-                    fuga sint eligendi autem quis alias sequi unde et, quasi maiores. Earum doloremque nam tenetur
-                    similique, iure beatae delectus vel! Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat
-                    nam, sequi quam iste ab obcaecati, alias quasi exercitationem cumque, iusto iure et debitis beatae?
-                    Sequi eligendi delectus eum ducimus? Amet. Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Aut eum neque voluptates! Facilis dolore magni nemo debitis aut saepe, iure doloribus asperiores
-                    modi, deserunt esse inventore temporibus hic assumenda iusto.</p>
-                <a href="https://github.com/l5-cryptohhhh/index.html/blob/main/index.html2.html">VEDI SU GITHUB
-                </a>
+    <nav class="nav">
+        <div class="wrap nav-inner">
+            <a href="index.html" class="brand"><span class="dot"></span>Manuel Nunziata</a>
+            <ul id="nav-menu">
+                <li><a href="index.html#chi-sono">Chi sono</a></li>
+                <li><a href="index.html#competenze">Competenze</a></li>
+                <li><a href="index.html#esperienze">Percorso</a></li>
+                <li><a href="index.html#contatti">Contatti</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <section id="progetti">
+            <div class="wrap">
+                <div class="projects-head">
+                    <div class="sec-head" data-reveal>
+                        <h2>Tutti i progetti.</h2>
+                        <p>Aggiungi, rimuovi e collega i tuoi lavori. Salvati nel tuo browser.</p>
+                    </div>
+                    <a href="index.html" class="btn btn-ghost btn-sm" data-reveal><i class="bi bi-arrow-left"></i>
+                        Torna alla home</a>
+                </div>
+                <div class="project-grid" data-projects></div>
             </div>
         </section>
     </main>
+
+    <!-- Modale nuovo progetto -->
+    <div id="project-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="project-modal-title"
+        aria-hidden="true">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="project-modal-title">Nuovo progetto</h3>
+                <button id="close-project-btn" type="button" aria-label="Chiudi"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <p class="modal-sub">Il link aprirà il progetto in una nuova scheda.</p>
+            <form id="project-form" novalidate>
+                <label for="proj-title">Titolo *</label>
+                <input type="text" id="proj-title" name="title" placeholder="Es. Dashboard meteo" required
+                    maxlength="60">
+                <p class="field-error" data-error-for="proj-title"></p>
+
+                <label for="proj-tag">Etichetta</label>
+                <input type="text" id="proj-tag" name="tag" placeholder="Es. React · API" maxlength="24">
+
+                <label for="proj-desc">Descrizione</label>
+                <textarea id="proj-desc" name="desc" rows="3" placeholder="Cosa fa e con cosa l'hai costruito"
+                    maxlength="220"></textarea>
+
+                <label for="proj-link">Link al progetto *</label>
+                <input type="url" id="proj-link" name="link" placeholder="https://..." required>
+                <p class="field-error" data-error-for="proj-link"></p>
+
+                <div class="modal-actions">
+                    <button type="button" id="annulla-project-btn" class="btn btn-ghost">Annulla</button>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-plus-lg"></i>Aggiungi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <footer>
-        <p>&copy; 2026 Manuel Nunziata - Costruito a mano durante la prima settimana di corso</p>
+        <div class="wrap footer-inner">
+            <p>&copy; 2026 Manuel Nunziata — Full-Stack AI Developer</p>
+            <span class="footer-icons">
+                <a href="https://www.linkedin.com/in/manuel-nunziata-800494372/" target="_blank" rel="noopener"
+                    aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                <a href="https://github.com/l5-cryptohhhh" target="_blank" rel="noopener" aria-label="GitHub"><i
+                        class="bi bi-github"></i></a>
+                <a href="mailto:nunziatamanuel5@gmail.com" aria-label="Email"><i class="bi bi-envelope"></i></a>
+            </span>
+        </div>
     </footer>
+
+    <script src="assets/js/script.js" defer></script>
 </body>
 
-</html>
-</body>
 </html>
