@@ -122,6 +122,12 @@
             tag: "React · JavaScript",
             desc: "App di collegamento e automazione tra strumenti per lavoro.",
             link: "https://l5-cryptohhhh.github.io/Autocon"
+        },
+        {
+            title: "Agente AI Email/Calendario",
+            tag: "Node.js · Claude API · Tool Use",
+            desc: "Agente che legge email e calendario, propone azioni (rispondi, schedula) e chiede approvazione umana prima di eseguirle.",
+            link: "https://github.com/l5-cryptohhhh/agente-ai-email-calendario"
         }
     ];
 
