@@ -264,19 +264,10 @@ a {
     width: clamp(190px, 24vw, 280px);
     aspect-ratio: 1;
     object-fit: cover;
-    object-position: bottom;
+    object-position: top;
     border-radius: var(--radius-lg);
     border: 1px solid var(--border);
     filter: grayscale(0.15) contrast(1.03);
-}
-
-.hero-portrait::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: var(--radius-lg);
-    box-shadow: inset 0 0 60px rgba(251, 122, 91, 0.12);
-    pointer-events: none;
 }
 
 .hero-portrait .chip-float {
