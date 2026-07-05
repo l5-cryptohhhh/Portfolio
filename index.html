@@ -56,7 +56,7 @@
                     </div>
                 </div>
                 <div class="hero-portrait" data-reveal>
-                    <img src="assets/img/pgimage.jpg" alt="Ritratto di Manuel Nunziata">
+                    <img src="assets/img/userimg.png" alt="Ritratto di Manuel Nunziata">
                     <span class="chip-float">Latina, IT · <b>Full-Stack AI</b></span>
                 </div>
             </div>
@@ -104,18 +104,16 @@
             </div>
         </section>
 
-        <!-- Attestati -->
-        <section id="attestati">
+        <!-- Progetti -->
+        <section id="progetti">
             <div class="wrap">
-                <div class="sec-head" data-reveal>
-                    <div class="head-row">
-                        <h2>Attestati</h2>
-                        <button class="add-icon-btn" type="button" data-add-cert
-                            aria-label="Aggiungi attestato"><i class="bi bi-plus-lg"></i></button>
+                <div class="projects-head">
+                    <div class="sec-head" data-reveal>
+                        <h2>Cose che ho costruito.</h2>
+                        <p>Una selezione dei miei progetti.</p>
                     </div>
-                    <p>Certificati e diplomi. Premi + per caricarne uno; clicca la card per aprirlo.</p>
                 </div>
-                <div class="project-grid" data-certs></div>
+                <div class="project-grid" id="project-grid" data-projects></div>
             </div>
         </section>
 
@@ -177,16 +175,14 @@
             </div>
         </section>
 
-        <!-- Progetti -->
-        <section id="progetti">
+        <!-- Attestati -->
+        <section id="attestati">
             <div class="wrap">
-                <div class="projects-head">
-                    <div class="sec-head" data-reveal>
-                        <h2>Cose che ho costruito.</h2>
-                        <p>Aggiungi, rimuovi e collega i tuoi lavori. Salvati nel browser.</p>
-                    </div>
+                <div class="sec-head" data-reveal>
+                    <h2>Attestati</h2>
+                    <p>Certificati e diplomi. Clicca una card per aprirla.</p>
                 </div>
-                <div class="project-grid" id="project-grid" data-projects></div>
+                <div class="project-grid" data-certs></div>
             </div>
         </section>
 
@@ -226,6 +222,10 @@
             </div>
             <p class="modal-sub">Compila il form, ti rispondo personalmente.</p>
             <form id="contact-form" novalidate>
+                <input type="hidden" name="_subject" value="Nuovo messaggio dal portfolio">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+
                 <label for="nome">Nome completo *</label>
                 <input type="text" id="nome" name="nome" placeholder="Mario Rossi" required>
 
@@ -254,67 +254,6 @@
         </div>
     </div>
 
-    <!-- Modale nuovo progetto -->
-    <div id="project-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="project-modal-title"
-        aria-hidden="true">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3 id="project-modal-title">Nuovo progetto</h3>
-                <button id="close-project-btn" type="button" aria-label="Chiudi"><i class="bi bi-x-lg"></i></button>
-            </div>
-            <p class="modal-sub">Il link aprirà il progetto in una nuova scheda.</p>
-            <form id="project-form" novalidate>
-                <label for="proj-title">Titolo *</label>
-                <input type="text" id="proj-title" name="title" placeholder="Es. Dashboard meteo" required
-                    maxlength="60">
-                <p class="field-error" data-error-for="proj-title"></p>
-
-                <label for="proj-tag">Etichetta</label>
-                <input type="text" id="proj-tag" name="tag" placeholder="Es. React · API" maxlength="24">
-
-                <label for="proj-desc">Descrizione</label>
-                <textarea id="proj-desc" name="desc" rows="3" placeholder="Cosa fa e con cosa l'hai costruito"
-                    maxlength="220"></textarea>
-
-                <label for="proj-link">Link al progetto *</label>
-                <input type="url" id="proj-link" name="link" placeholder="https://..." required>
-                <p class="field-error" data-error-for="proj-link"></p>
-
-                <div class="modal-actions">
-                    <button type="button" id="annulla-project-btn" class="btn btn-ghost">Annulla</button>
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-plus-lg"></i>Aggiungi</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modale nuovo attestato -->
-    <div id="cert-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="cert-modal-title"
-        aria-hidden="true">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3 id="cert-modal-title">Nuovo attestato</h3>
-                <button id="close-cert-btn" type="button" aria-label="Chiudi"><i class="bi bi-x-lg"></i></button>
-            </div>
-            <p class="modal-sub">Carica il file e scrivi una frase che lo descrive.</p>
-            <form id="cert-form" novalidate>
-                <label for="cert-label">Descrizione *</label>
-                <input type="text" id="cert-label" name="label" placeholder="Es. Diploma Full-Stack Epicode" required
-                    maxlength="80">
-                <p class="field-error" data-error-for="cert-label"></p>
-
-                <label for="cert-file">File (PDF o immagine) *</label>
-                <input type="file" id="cert-file" name="file" accept="application/pdf,image/*" required>
-                <p class="field-error" data-error-for="cert-file"></p>
-
-                <div class="modal-actions">
-                    <button type="button" id="annulla-cert-btn" class="btn btn-ghost">Annulla</button>
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-plus-lg"></i>Aggiungi</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <footer>
         <div class="wrap footer-inner">
             <p>&copy; 2026 Manuel Nunziata — Full-Stack AI Developer</p>
@@ -323,7 +262,8 @@
                     aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
                 <a href="https://github.com/l5-cryptohhhh" target="_blank" rel="noopener" aria-label="GitHub"><i
                         class="bi bi-github"></i></a>
-                <a href="mailto:nunziatamanuel5@gmail.com" aria-label="Email"><i class="bi bi-envelope"></i></a>
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=nunziatamanuel5@gmail.com" target="_blank"
+                    rel="noopener" aria-label="Email"><i class="bi bi-envelope"></i></a>
             </span>
         </div>
     </footer>

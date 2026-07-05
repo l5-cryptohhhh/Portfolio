@@ -15,16 +15,6 @@
         }[c]));
     }
 
-    // Only allow http/https links (blocks javascript: and friends)
-    function safeURL(raw) {
-        try {
-            const u = new URL(raw.trim());
-            return (u.protocol === "http:" || u.protocol === "https:") ? u.href : null;
-        } catch {
-            return null;
-        }
-    }
-
     function hostOf(url) {
         try { return new URL(url).hostname.replace(/^www\./, ""); }
         catch { return "apri"; }
@@ -80,16 +70,31 @@
             if (!form.checkValidity()) { form.reportValidity(); return; }
 
             const get = (id) => $("#" + id).value.trim();
-            $("#conf-nome").textContent = get("nome");
-            $("#conf-email").textContent = get("email");
-            $("#conf-motivo").textContent = $("#motivo").value;
-            $("#conf-data").textContent = $("#data").value || "—";
-            $("#conf-messaggio").textContent = get("messaggio") || "—";
+            const submitBtn = form.querySelector("button[type=submit]");
+            submitBtn.disabled = true;
 
-            confermaBox.hidden = false;
-            modal.close();
-            form.reset();
-            confermaBox.scrollIntoView({ behavior: "smooth", block: "center" });
+            fetch("https://formsubmit.co/ajax/nunziatamanuel5@gmail.com", {
+                method: "POST",
+                headers: { "Accept": "application/json" },
+                body: new FormData(form)
+            })
+                .then((res) => { if (!res.ok) throw new Error("send failed"); })
+                .then(() => {
+                    $("#conf-nome").textContent = get("nome");
+                    $("#conf-email").textContent = get("email");
+                    $("#conf-motivo").textContent = $("#motivo").value;
+                    $("#conf-data").textContent = $("#data").value || "—";
+                    $("#conf-messaggio").textContent = get("messaggio") || "—";
+
+                    confermaBox.hidden = false;
+                    modal.close();
+                    form.reset();
+                    confermaBox.scrollIntoView({ behavior: "smooth", block: "center" });
+                })
+                .catch(() => {
+                    alert("Invio non riuscito. Riprova o scrivimi direttamente a nunziatamanuel5@gmail.com.");
+                })
+                .finally(() => { submitBtn.disabled = false; });
         });
 
         const chiudi = $("#chiudi-conferma-btn");
@@ -97,113 +102,47 @@
     }
 
     /* ============================================================
-       Projects — store + render (localStorage)
+       Projects — hardcoded list, edit this array to add/remove projects
        ============================================================ */
-    const STORAGE_KEY = "mn_projects_v1";
-
-    const SEED = [
+    const PROJECTS = [
         {
-            id: "seed-ricetta",
-            title: "Pagina Ricetta",
-            tag: "HTML semantico",
-            desc: "Titolo, ingredienti e procedura. Esercizio di markup applicato a un contenuto reale.",
-            link: "https://github.com/l5-cryptohhhh"
+            title: "MonkeyCode",
+            tag: "HTML · CSS · JavaScript",
+            desc: "Benchmark di 20 domande randomiche sulle competenze front-end.",
+            link: "https://gabrieleleonardi21.github.io/MonkeyCode"
         },
         {
-            id: "seed-card",
-            title: "Card di Presentazione",
-            tag: "HTML · CSS",
-            desc: "Biglietto digitale con nome, ruolo e link social. Sintesi sulla struttura della pagina.",
-            link: "https://github.com/l5-cryptohhhh"
+            title: "MusiCode",
+            tag: "HTML · CSS · JavaScript",
+            desc: "Clone app musicale, simile a Spotify.",
+            link: "https://l5-cryptohhhh.github.io/MusiCode"
         },
         {
-            id: "seed-portfolio",
-            title: "Questo Portfolio",
-            tag: "HTML · CSS · JS",
-            desc: "Portfolio personale con sezione progetti dinamica salvata nel browser.",
-            link: "https://github.com/l5-cryptohhhh"
+            title: "Autocon",
+            tag: "React · JavaScript",
+            desc: "App di collegamento e automazione tra strumenti per lavoro.",
+            link: "https://l5-cryptohhhh.github.io/Autocon"
         }
     ];
 
-    function loadProjects() {
-        try {
-            const raw = localStorage.getItem(STORAGE_KEY);
-            if (raw === null) { saveProjects(SEED); return SEED.slice(); }
-            const data = JSON.parse(raw);
-            return Array.isArray(data) ? data : SEED.slice();
-        } catch {
-            return SEED.slice();
-        }
-    }
-
-    function saveProjects(list) {
-        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
-        catch { /* storage piena o disabilitata: la sessione resta in memoria */ }
-    }
-
-    let projects = loadProjects();
-
     function cardHTML(p) {
-        const safe = safeURL(p.link) || "#";
-        const tag = p.tag
-            ? `<span class="pc-tag">${escapeHTML(p.tag)}</span>`
-            : `<span class="pc-tag">progetto</span>`;
-        const desc = p.desc
-            ? `<p class="pc-desc">${escapeHTML(p.desc)}</p>`
-            : `<p class="pc-desc"></p>`;
         return `
-            <article class="project-card" data-id="${escapeHTML(p.id)}">
-                <button class="pc-remove" type="button" aria-label="Rimuovi ${escapeHTML(p.title)}">
-                    <i class="bi bi-trash3"></i>
-                </button>
-                <div class="pc-top">${tag}</div>
+            <article class="project-card">
+                <div class="pc-top"><span class="pc-tag">${escapeHTML(p.tag)}</span></div>
                 <h3>${escapeHTML(p.title)}</h3>
-                ${desc}
-                <a class="pc-link" href="${safe}" target="_blank" rel="noopener">
-                    Apri su ${escapeHTML(hostOf(safe))} <i class="bi bi-arrow-up-right"></i>
+                <p class="pc-desc">${escapeHTML(p.desc)}</p>
+                <a class="pc-link" href="${p.link}" target="_blank" rel="noopener">
+                    Apri su ${escapeHTML(hostOf(p.link))} <i class="bi bi-arrow-up-right"></i>
                 </a>
             </article>`;
     }
 
-    function render() {
+    function renderProjects() {
         $$("[data-projects]").forEach((grid) => {
-            const limit = parseInt(grid.dataset.limit || "0", 10);
-            const list = limit > 0 ? projects.slice(0, limit) : projects;
-
-            let html = list.map(cardHTML).join("");
-
-            if (list.length === 0) {
-                html = `<p class="projects-empty">Ancora nessun progetto. Aggiungine uno.</p>`;
-            }
-            // Add-card always last (unless we hit the visible limit on the home grid)
-            const hiddenByLimit = limit > 0 && projects.length >= limit;
-            if (!hiddenByLimit) {
-                html += `
-                    <button class="project-add" type="button" data-add-project>
-                        <i class="bi bi-plus-circle"></i>
-                        Aggiungi progetto
-                    </button>`;
-            }
-            grid.innerHTML = html;
+            grid.innerHTML = PROJECTS.length
+                ? PROJECTS.map(cardHTML).join("")
+                : `<p class="projects-empty">Ancora nessun progetto.</p>`;
         });
-        wireCards();
-    }
-
-    function wireCards() {
-        // Remove
-        $$(".pc-remove").forEach((btn) => {
-            btn.addEventListener("click", () => {
-                const card = btn.closest(".project-card");
-                const id = card && card.dataset.id;
-                if (!id) return;
-                if (!confirm("Rimuovere questo progetto?")) return;
-                projects = projects.filter((p) => p.id !== id);
-                saveProjects(projects);
-                render();
-            });
-        });
-
-        // Spotlight follow
         $$(".project-card").forEach((card) => {
             card.addEventListener("mousemove", (e) => {
                 const r = card.getBoundingClientRect();
@@ -211,222 +150,49 @@
                 card.style.setProperty("--my", `${e.clientY - r.top}px`);
             });
         });
-
-        // Open add modal
-        $$("[data-add-project]").forEach((b) => b.addEventListener("click", () => {
-            if (projectModal) projectModal.open();
-        }));
-    }
-
-    /* ---------- Add-project modal ---------- */
-    let projectModal = null;
-
-    function initProjects() {
-        if ($$("[data-projects]").length === 0) return;
-
-        const overlay = $("#project-modal");
-        const form = $("#project-form");
-
-        projectModal = setupModal(overlay, {
-            closers: [$("#close-project-btn"), $("#annulla-project-btn")],
-            onOpen: () => clearErrors()
-        });
-
-        function clearErrors() {
-            $$("[data-error-for]").forEach((el) => (el.textContent = ""));
-        }
-        function showError(field, msg) {
-            const el = $(`[data-error-for="${field}"]`);
-            if (el) el.textContent = msg;
-        }
-
-        if (form) {
-            form.addEventListener("submit", (e) => {
-                e.preventDefault();
-                clearErrors();
-
-                const title = $("#proj-title").value.trim();
-                const tag = $("#proj-tag").value.trim();
-                const desc = $("#proj-desc").value.trim();
-                const linkRaw = $("#proj-link").value.trim();
-
-                let ok = true;
-                if (!title) { showError("proj-title", "Il titolo è obbligatorio."); ok = false; }
-                const link = safeURL(linkRaw);
-                if (!link) { showError("proj-link", "Inserisci un URL valido (http/https)."); ok = false; }
-                if (!ok) return;
-
-                projects.unshift({
-                    id: "p-" + Date.now().toString(36),
-                    title, tag, desc, link
-                });
-                saveProjects(projects);
-                render();
-                form.reset();
-                projectModal.close();
-            });
-        }
-
-        render();
     }
 
     /* ============================================================
-       Attestati — files stored in IndexedDB (blobs too big for localStorage)
+       Attestati — hardcoded list, edit this array to add/remove certs.
+       Put files under assets/certs/ and reference them here.
        ============================================================ */
-    const IDB_NAME = "mn_portfolio";
-    const IDB_STORE = "attestati";
-
-    function openDB() {
-        return new Promise((resolve, reject) => {
-            const req = indexedDB.open(IDB_NAME, 1);
-            req.onupgradeneeded = () => {
-                const db = req.result;
-                if (!db.objectStoreNames.contains(IDB_STORE)) {
-                    db.createObjectStore(IDB_STORE, { keyPath: "id" });
-                }
-            };
-            req.onsuccess = () => resolve(req.result);
-            req.onerror = () => reject(req.error);
-        });
-    }
-
-    async function certPut(rec) {
-        const db = await openDB();
-        return new Promise((res, rej) => {
-            const tx = db.transaction(IDB_STORE, "readwrite");
-            tx.objectStore(IDB_STORE).put(rec);
-            tx.oncomplete = () => res();
-            tx.onerror = () => rej(tx.error);
-        });
-    }
-
-    async function certGetAll() {
-        const db = await openDB();
-        return new Promise((res, rej) => {
-            const tx = db.transaction(IDB_STORE, "readonly");
-            const rq = tx.objectStore(IDB_STORE).getAll();
-            rq.onsuccess = () => res(rq.result || []);
-            rq.onerror = () => rej(rq.error);
-        });
-    }
-
-    async function certDelete(id) {
-        const db = await openDB();
-        return new Promise((res, rej) => {
-            const tx = db.transaction(IDB_STORE, "readwrite");
-            tx.objectStore(IDB_STORE).delete(id);
-            tx.oncomplete = () => res();
-            tx.onerror = () => rej(tx.error);
-        });
-    }
-
-    let certs = [];
+    const CERTS = [
+        { label: "HTML5 / CSS3", url: "assets/certs/m1.pdf" },
+        { label: "Loops / JavaScript / Variables / Objects / Arrays / Conditionals", url: "assets/certs/m2.pdf" },
+        { label: "DOM / ES6 / JavaScript / BOM", url: "assets/certs/m3.pdf" },
+        { label: "CSS3 / Animations / Flexbox / UX/UI", url: "assets/certs/m4.pdf" },
+        { label: "Bootstrap / Sass / Claude Code", url: "assets/certs/m5.pdf" },
+        { label: "API / Async/await / OOP / JSON", url: "assets/certs/m6.pdf" },
+        { label: "React Ecosystem & Component-Driven Design / API Integration & Asynchronous Data / AI-Assisted Development / Claude Code / Prompt Engineering", url: "assets/certs/m7.pdf" }
+    ];
 
     function certCardHTML(c) {
         return `
-            <article class="cert-card" data-id="${escapeHTML(c.id)}" role="button" tabindex="0"
+            <article class="cert-card" data-href="${escapeHTML(c.url)}" role="link" tabindex="0"
                 aria-label="Apri ${escapeHTML(c.label)}">
-                <button class="pc-remove" type="button" aria-label="Rimuovi ${escapeHTML(c.label)}">
-                    <i class="bi bi-trash3"></i>
-                </button>
                 <i class="bi bi-patch-check cert-ic"></i>
                 <h3>${escapeHTML(c.label)}</h3>
                 <span class="cert-open">Apri attestato <i class="bi bi-arrow-up-right"></i></span>
             </article>`;
     }
 
-    function openCert(id) {
-        const rec = certs.find((c) => c.id === id);
-        if (!rec || !rec.blob) return;
-        const url = URL.createObjectURL(rec.blob);
-        window.open(url, "_blank", "noopener");
-        setTimeout(() => URL.revokeObjectURL(url), 30000);
-    }
-
     function renderCerts() {
         const grid = $("[data-certs]");
         if (!grid) return;
 
-        if (certs.length === 0) {
-            grid.innerHTML = `<p class="projects-empty">Nessun attestato caricato. Premi + per aggiungerne uno.</p>`;
+        if (CERTS.length === 0) {
+            grid.innerHTML = `<p class="projects-empty">Nessun attestato ancora.</p>`;
             return;
         }
-        grid.innerHTML = certs.map(certCardHTML).join("");
+        grid.innerHTML = CERTS.map(certCardHTML).join("");
 
         $$(".cert-card", grid).forEach((card) => {
-            const id = card.dataset.id;
-            const go = (e) => {
-                if (e.target.closest(".pc-remove")) return;
-                openCert(id);
-            };
-            card.addEventListener("click", go);
+            const open = () => window.open(card.dataset.href, "_blank", "noopener");
+            card.addEventListener("click", open);
             card.addEventListener("keydown", (e) => {
-                if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openCert(id); }
-            });
-            const rm = card.querySelector(".pc-remove");
-            rm.addEventListener("click", async (e) => {
-                e.stopPropagation();
-                if (!confirm("Rimuovere questo attestato?")) return;
-                await certDelete(id);
-                certs = certs.filter((c) => c.id !== id);
-                renderCerts();
+                if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); }
             });
         });
-    }
-
-    function initCerts() {
-        const grid = $("[data-certs]");
-        if (!grid || !("indexedDB" in window)) {
-            if (grid) grid.innerHTML = `<p class="projects-empty">Il tuo browser non supporta il caricamento file.</p>`;
-            return;
-        }
-
-        const overlay = $("#cert-modal");
-        const form = $("#cert-form");
-        const modal = setupModal(overlay, {
-            openers: $$("[data-add-cert]"),
-            closers: [$("#close-cert-btn"), $("#annulla-cert-btn")],
-            onOpen: () => $$("[data-error-for]", overlay).forEach((el) => (el.textContent = ""))
-        });
-
-        if (form) {
-            form.addEventListener("submit", async (e) => {
-                e.preventDefault();
-                const errLabel = $('[data-error-for="cert-label"]');
-                const errFile = $('[data-error-for="cert-file"]');
-                errLabel.textContent = "";
-                errFile.textContent = "";
-
-                const label = $("#cert-label").value.trim();
-                const file = $("#cert-file").files[0];
-                let ok = true;
-                if (!label) { errLabel.textContent = "Scrivi una descrizione."; ok = false; }
-                if (!file) { errFile.textContent = "Seleziona un file."; ok = false; }
-                if (!ok) return;
-
-                const rec = {
-                    id: "c-" + Date.now().toString(36),
-                    label,
-                    blob: file,
-                    type: file.type,
-                    name: file.name
-                };
-                try {
-                    await certPut(rec);
-                } catch {
-                    errFile.textContent = "Salvataggio non riuscito. File troppo grande?";
-                    return;
-                }
-                certs.unshift(rec);
-                renderCerts();
-                form.reset();
-                modal.close();
-            });
-        }
-
-        certGetAll()
-            .then((list) => { certs = list.reverse(); renderCerts(); })
-            .catch(() => { certs = []; renderCerts(); });
     }
 
     /* ============================================================
@@ -492,8 +258,8 @@
     /* ---------- Boot ---------- */
     document.addEventListener("DOMContentLoaded", () => {
         initContact();
-        initProjects();
-        initCerts();
+        renderProjects();
+        renderCerts();
         initReveal();
         initNav();
     });

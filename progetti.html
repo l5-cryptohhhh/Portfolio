@@ -35,7 +35,7 @@
                 <div class="projects-head">
                     <div class="sec-head" data-reveal>
                         <h2>Tutti i progetti.</h2>
-                        <p>Aggiungi, rimuovi e collega i tuoi lavori. Salvati nel tuo browser.</p>
+                        <p>I lavori che ho realizzato finora.</p>
                     </div>
                     <a href="index.html" class="btn btn-ghost btn-sm" data-reveal><i class="bi bi-arrow-left"></i>
                         Torna alla home</a>
@@ -44,40 +44,6 @@
             </div>
         </section>
     </main>
-
-    <!-- Modale nuovo progetto -->
-    <div id="project-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="project-modal-title"
-        aria-hidden="true">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3 id="project-modal-title">Nuovo progetto</h3>
-                <button id="close-project-btn" type="button" aria-label="Chiudi"><i class="bi bi-x-lg"></i></button>
-            </div>
-            <p class="modal-sub">Il link aprirà il progetto in una nuova scheda.</p>
-            <form id="project-form" novalidate>
-                <label for="proj-title">Titolo *</label>
-                <input type="text" id="proj-title" name="title" placeholder="Es. Dashboard meteo" required
-                    maxlength="60">
-                <p class="field-error" data-error-for="proj-title"></p>
-
-                <label for="proj-tag">Etichetta</label>
-                <input type="text" id="proj-tag" name="tag" placeholder="Es. React · API" maxlength="24">
-
-                <label for="proj-desc">Descrizione</label>
-                <textarea id="proj-desc" name="desc" rows="3" placeholder="Cosa fa e con cosa l'hai costruito"
-                    maxlength="220"></textarea>
-
-                <label for="proj-link">Link al progetto *</label>
-                <input type="url" id="proj-link" name="link" placeholder="https://..." required>
-                <p class="field-error" data-error-for="proj-link"></p>
-
-                <div class="modal-actions">
-                    <button type="button" id="annulla-project-btn" class="btn btn-ghost">Annulla</button>
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-plus-lg"></i>Aggiungi</button>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <footer>
         <div class="wrap footer-inner">

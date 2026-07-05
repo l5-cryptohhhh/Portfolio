@@ -264,6 +264,7 @@ a {
     width: clamp(190px, 24vw, 280px);
     aspect-ratio: 1;
     object-fit: cover;
+    object-position: bottom;
     border-radius: var(--radius-lg);
     border: 1px solid var(--border);
     filter: grayscale(0.15) contrast(1.03);
@@ -633,69 +634,6 @@ section[id] {
     gap: 13px;
 }
 
-.pc-remove {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    width: 32px;
-    height: 32px;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    background: var(--surface-2);
-    color: var(--muted);
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.2s, color 0.2s, border-color 0.2s, transform 0.18s;
-    z-index: 2;
-}
-
-.project-card:hover .pc-remove,
-.pc-remove:focus-visible {
-    opacity: 1;
-}
-
-.pc-remove:hover {
-    color: #ff6b6b;
-    border-color: #ff6b6b;
-    transform: scale(1.08);
-}
-
-/* Add card */
-.project-add {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    min-height: 200px;
-    padding: 26px;
-    border: 1.5px dashed var(--border);
-    border-radius: var(--radius-lg);
-    background: transparent;
-    color: var(--muted);
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: border-color 0.25s, color 0.25s, background 0.25s, transform 0.18s var(--ease-out);
-}
-
-.project-add i {
-    font-size: 1.7rem;
-}
-
-.project-add:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-    background: var(--accent-soft);
-}
-
-.project-add:active {
-    transform: scale(0.99);
-}
-
 .projects-empty {
     grid-column: 1 / -1;
     text-align: center;
@@ -704,42 +642,6 @@ section[id] {
 }
 
 /* ── Attestati ───────────────────────────────────────────── */
-.head-row {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 12px;
-}
-
-.head-row h2 {
-    margin: 0;
-}
-
-.add-icon-btn {
-    flex: none;
-    width: 42px;
-    height: 42px;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    border: 1px solid var(--accent-line);
-    background: var(--accent-soft);
-    color: var(--accent);
-    font-size: 1.15rem;
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s, transform 0.18s var(--ease-out);
-}
-
-.add-icon-btn:hover {
-    background: var(--accent);
-    color: var(--accent-ink);
-    transform: scale(1.06);
-}
-
-.add-icon-btn:active {
-    transform: scale(0.96);
-}
-
 .cert-card {
     position: relative;
     display: flex;
@@ -776,11 +678,6 @@ section[id] {
     color: var(--accent);
     font-weight: 600;
     font-size: 0.9rem;
-}
-
-.cert-card:hover .pc-remove,
-.cert-card .pc-remove:focus-visible {
-    opacity: 1;
 }
 
 /* ── Contact ─────────────────────────────────────────────── */
