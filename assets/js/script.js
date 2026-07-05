@@ -127,7 +127,7 @@
             title: "Agente AI Email/Calendario",
             tag: "Node.js · Claude API · Tool Use",
             desc: "Agente che legge email e calendario, propone azioni (rispondi, schedula) e chiede approvazione umana prima di eseguirle.",
-            link: "https://github.com/l5-cryptohhhh/agente-ai-email-calendario"
+            link: "https://l5-cryptohhhh.github.io/agentmailcalendar/"
         }
     ];
 
