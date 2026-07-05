@@ -109,13 +109,13 @@
             title: "MonkeyCode",
             tag: "HTML · CSS · JavaScript",
             desc: "Benchmark di 20 domande randomiche sulle competenze front-end.",
-            link: "https://gabrieleleonardi21.github.io/MonkeyCode"
+            link: "https://gabrieleleonardi21.github.io/Build-week-1/"
         },
         {
             title: "MusiCode",
             tag: "HTML · CSS · JavaScript",
             desc: "Clone app musicale, simile a Spotify.",
-            link: "https://l5-cryptohhhh.github.io/MusiCode"
+            link: "https://l5-cryptohhhh.github.io/Build-week-2/"
         },
         {
             title: "Autocon",
