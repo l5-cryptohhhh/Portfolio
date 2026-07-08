@@ -66,14 +66,14 @@ export default function Hero() {
                         <Lanyard
                             position={[0, 0, 24]}
                             gravity={[0, -40, 0]}
-                            frontImage="/img/userimg.png"
+                            frontImage={`${import.meta.env.BASE_URL}img/userimg.png`}
                             imageFit="cover"
                         />
                     </div>
                 ) : (
                     <div className="flex w-full items-center justify-center">
                         <TiltedCard
-                            imageSrc="/img/userimg.png"
+                            imageSrc={`${import.meta.env.BASE_URL}img/userimg.png`}
                             altText="Manuel Nunziata"
                             captionText="Manuel Nunziata"
                             containerHeight="300px"

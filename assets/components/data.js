@@ -25,14 +25,16 @@ export const PROJECTS = [
     }
 ];
 
+const BASE = import.meta.env.BASE_URL;
+
 export const CERTS = [
-    { label: "HTML5 / CSS3", url: "/certs/m1.pdf" },
-    { label: "Loops / JavaScript / Variables / Objects / Arrays / Conditionals", url: "/certs/m2.pdf" },
-    { label: "DOM / ES6 / JavaScript / BOM", url: "/certs/m3.pdf" },
-    { label: "CSS3 / Animations / Flexbox / UX/UI", url: "/certs/m4.pdf" },
-    { label: "Bootstrap / Sass / Claude Code", url: "/certs/m5.pdf" },
-    { label: "API / Async/await / OOP / JSON", url: "/certs/m6.pdf" },
-    { label: "React Ecosystem & Component-Driven Design / API Integration & Asynchronous Data / AI-Assisted Development / Claude Code / Prompt Engineering", url: "/certs/m7.pdf" }
+    { label: "HTML5 / CSS3", url: `${BASE}certs/m1.pdf` },
+    { label: "Loops / JavaScript / Variables / Objects / Arrays / Conditionals", url: `${BASE}certs/m2.pdf` },
+    { label: "DOM / ES6 / JavaScript / BOM", url: `${BASE}certs/m3.pdf` },
+    { label: "CSS3 / Animations / Flexbox / UX/UI", url: `${BASE}certs/m4.pdf` },
+    { label: "Bootstrap / Sass / Claude Code", url: `${BASE}certs/m5.pdf` },
+    { label: "API / Async/await / OOP / JSON", url: `${BASE}certs/m6.pdf` },
+    { label: "React Ecosystem & Component-Driven Design / API Integration & Asynchronous Data / AI-Assisted Development / Claude Code / Prompt Engineering", url: `${BASE}certs/m7.pdf` }
 ];
 
 export function hostOf(url) {
