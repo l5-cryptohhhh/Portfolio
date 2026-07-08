@@ -1,7 +1,24 @@
+import { useEffect, useState } from "react";
 import Lanyard from "../../src/components/Lanyard/Lanyard.jsx";
+import TiltedCard from "../../src/components/TiltedCard/TiltedCard.jsx";
 import TrueFocus from "../../src/components/TrueFocus/TrueFocus.jsx";
 
+// Rende Lanyard solo >= 768px: con display:none il Canvas 3D girerebbe comunque
+function useIsDesktop() {
+    const [isDesktop, setIsDesktop] = useState(
+        () => typeof window !== "undefined" && window.matchMedia("(min-width: 768px)").matches
+    );
+    useEffect(() => {
+        const mq = window.matchMedia("(min-width: 768px)");
+        const onChange = (e) => setIsDesktop(e.matches);
+        mq.addEventListener("change", onChange);
+        return () => mq.removeEventListener("change", onChange);
+    }, []);
+    return isDesktop;
+}
+
 export default function Hero() {
+    const isDesktop = useIsDesktop();
     return (
         <header className="relative flex flex-1 items-center pt-16">
             <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-5 py-10 md:grid-cols-[1.2fr_0.8fr]">
@@ -43,14 +60,39 @@ export default function Hero() {
                         </a>
                     </div>
                 </div>
-                <div className="relative h-[45vh] w-full md:h-[60vh]">
-                    <Lanyard
-                        position={[0, 0, 24]}
-                        gravity={[0, -40, 0]}
-                        frontImage="/img/userimg.png"
-                        imageFit="cover"
-                    />
-                </div>
+                {/* < 768px: TiltedCard; >= 768px: Lanyard 3D */}
+                {isDesktop ? (
+                    <div className="relative h-[60vh] w-full">
+                        <Lanyard
+                            position={[0, 0, 24]}
+                            gravity={[0, -40, 0]}
+                            frontImage="/img/userimg.png"
+                            imageFit="cover"
+                        />
+                    </div>
+                ) : (
+                    <div className="flex w-full items-center justify-center">
+                        <TiltedCard
+                            imageSrc="/img/userimg.png"
+                            altText="Manuel Nunziata"
+                            captionText="Manuel Nunziata"
+                            containerHeight="300px"
+                            containerWidth="300px"
+                            imageHeight="300px"
+                            imageWidth="300px"
+                            rotateAmplitude={12}
+                            scaleOnHover={1.2}
+                            showMobileWarning={false}
+                            showTooltip={true}
+                            displayOverlayContent={true}
+                            overlayContent={
+                                <p className="tilted-card-demo-text m-2 rounded-full bg-black/50 px-4 py-1 text-sm font-semibold text-white backdrop-blur">
+                                    Manuel Nunziata
+                                </p>
+                            }
+                        />
+                    </div>
+                )}
             </div>
         </header>
     );

@@ -366,3 +366,21 @@
     border-left: none;
   }
 }
+
+@media (max-width: 576px) {
+  .staggered-menu-panel {
+    padding: 5em 1.5em 1.5em 1.5em;
+  }
+
+  .sm-panel-item {
+    font-size: clamp(1.75rem, 9vw, 2.25rem);
+    letter-spacing: -1px;
+    padding-right: 1.5em;
+  }
+
+  /* Numero dentro il padding del label: right 2.8em (50px) sfora oltre il padding a queste dimensioni */
+  .sm-panel-list[data-numbering] .sm-panel-item::after {
+    right: 0.25em;
+    font-size: 14px;
+  }
+}
