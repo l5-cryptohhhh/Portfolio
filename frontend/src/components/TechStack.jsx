@@ -7,7 +7,7 @@ import { tech as TECH } from '../data/tech.js'
 import { ICONS } from './techIcons.js'
 import Reveal from './Reveal.jsx'
 
-// Disegna il logo + il nome sul canvas. `svg` e' l'immagine di public/icons (se c'e'), altrimenti si usa il logo di ripiego.
+// Disegna il logo + il nome sul canvas. `svg` e' l'immagine di frontend/public/icons (se c'e'), altrimenti si usa il logo di ripiego.
 function paint(g, { label, fallback, svg }) {
   g.clearRect(0, 0, 512, 512)
   if (svg) {
@@ -30,7 +30,7 @@ function paint(g, { label, fallback, svg }) {
   g.fillText(label, 256, 438)
 }
 
-// Crea l'adesivo (decal) della pallina. Parte subito con il logo di ripiego; se in public/icons/<icon>.svg
+// Crea l'adesivo (decal) della pallina. Parte subito con il logo di ripiego; se in frontend/public/icons/<icon>.svg
 // esiste un file, lo carica e ridisegna la texture appena e' pronto.
 function makeTexture(item) {
   const c = document.createElement('canvas')

@@ -16,7 +16,7 @@ const ROLE_WIDTH = Math.max(...ROLE_WORDS.map((r) => r.length))
 const [firstName, ...restName] = profile.name.toUpperCase().split(' ')
 const NAME_LINES = restName.length ? [firstName, restName.join(' ')] : [firstName]
 
-// Metti il tuo modello in /public/avatar.glb: viene usato in automatico.
+// Metti il tuo modello in /frontend/public/avatar.glb: viene usato in automatico.
 // Se il file non c'è, compare un segnaposto.
 const GLB_URL = '/avatar.glb'
 

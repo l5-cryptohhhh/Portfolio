@@ -1,6 +1,6 @@
 // Tecnologie mostrate nelle palline della sezione TechStack.
 // - label: testo scritto sulla pallina
-// - icon: nome del file in public/icons/ (senza estensione). Se esiste public/icons/<icon>.svg
+// - icon: nome del file in frontend/public/icons/ (senza estensione). Se esiste frontend/public/icons/<icon>.svg
 //   viene usato quello; altrimenti si usa il logo ufficiale incluso nel progetto (se noto).
 // - color: opzionale, colore della pallina (esadecimale senza #) se l'icona e' tua e non ha un brand noto.
 

@@ -1,13 +1,13 @@
 // Progetti mostrati nella sezione Work (scroll orizzontale).
 // - live / repo: se entrambi sono vuoti la card non e' cliccabile.
 //   Se c'e' solo uno dei due, la card intera porta a quello.
-// - image: percorso in public/ (es. '/projects/uno.jpg'). Vuoto = immagine segnaposto casuale.
+// - image: percorso in frontend/public/ (es. '/projects/uno.jpg'). Vuoto = immagine segnaposto casuale.
 
 export const projects = [
   {
     title: 'Fymera One', // TODO
     description: 'Centralino e chatbot AI con dashboard',
-    tools: ['React', 'Node', 'PostgreSQL'], // TODO
+    tools: ['Next.js', 'TypeScript', 'NestJS', 'PostgreSQL', 'Docker'],
     live: 'https://fymera.one/',
     repo: '', // TODO: link a GitHub (se e' pubblico)
     image: '/projects/fymera.png',

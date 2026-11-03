@@ -1,7 +1,7 @@
 import { GithubLogo, InstagramLogo, LinkedinLogo, XLogo } from '@phosphor-icons/react'
 import { contacts } from '../data/contacts.js'
 
-// L'etichetta in src/data/contacts.js decide l'icona. Compaiono solo i social con un URL compilato.
+// L'etichetta in frontend/src/data/contacts.js decide l'icona. Compaiono solo i social con un URL compilato.
 const ICONS = { github: GithubLogo, linkedin: LinkedinLogo, x: XLogo, instagram: InstagramLogo }
 
 export default function SocialIcons({ className }) {

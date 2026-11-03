@@ -4,7 +4,7 @@ import Reveal from './Reveal.jsx'
 
 import { profile } from '../data/profile.js'
 
-// Metti la scena (personaggio alla scrivania) in /public/desk.glb
+// Metti la scena (personaggio alla scrivania) in /frontend/public/desk.glb
 const items = profile.services
 
 export default function WhatIDo() {

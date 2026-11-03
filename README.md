@@ -1,15 +1,38 @@
 # Portfolio
 
-Avvio:
+## Struttura
+
+```
+Portfolio/
+├── package.json, vite.config.js, index.html, README.md   <- nella radice: servono ad avviare il sito
+├── .env.example                                          <- variabili d'ambiente (form di contatto)
+├── frontend/                                             <- il sito (React + Vite)
+│   ├── public/                                           <- file statici: avatar.glb, desk.glb, foto, immagini, icone
+│   └── src/
+│       ├── main.jsx, App.jsx, styles.css
+│       ├── components/                                   <- Hero, WhatIDo, About, Experience, Work, TechStack, Contact, ...
+│       ├── data/                                         <- i TUOI testi (profilo, esperienze, progetti, contatti, tecnologie)
+│       └── hooks/
+└── backend/                                              <- progetto Spring Boot (Maven)
+```
+
+## Avvio del sito
+
+Dalla radice:
 
     npm install
     npm run dev
 
 Build di produzione: `npm run build` (anteprima con `npm run preview`).
 
+## Avvio del backend
+
+    cd backend
+    ./mvnw spring-boot:run
+
 ## Dove modificare i contenuti
 
-Tutti i testi stanno in `src/data/`. I segnaposto sono marcati con `TODO`.
+Tutti i testi stanno in `frontend/src/data/`. I segnaposto sono marcati con `TODO`.
 
 | File | Cosa contiene |
 | --- | --- |
@@ -19,9 +42,9 @@ Tutti i testi stanno in `src/data/`. I segnaposto sono marcati con `TODO`.
 | `contacts.js` | email e social |
 | `tech.js` | tecnologie delle palline in TechStack |
 
-Per trovare tutto cio' che resta da compilare: cerca `TODO` in `src/data/` e in `index.html`.
+Per trovare tutto cio' che resta da compilare: cerca `TODO` in `frontend/src/data/` e in `index.html`.
 
-## File da aggiungere in `public/`
+## File da aggiungere in `frontend/public/`
 
 - `avatar.glb`: personaggio dell'Hero (se manca compare un segnaposto)
 - `desk.glb`: scena di "What I do" (se manca compare un segnaposto)

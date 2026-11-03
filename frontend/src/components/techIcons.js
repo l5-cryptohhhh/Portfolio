@@ -3,8 +3,8 @@ import {
   siNextdotjs, siThreedotjs, siGreensock, siN8n, siDocker, siFigma, siPhp, siMongodb,
 } from 'simple-icons'
 
-// Logo ufficiali dei brand (Simple Icons), usati come ripiego quando in public/icons/ non c'e' un SVG.
-// La chiave e' il campo `icon` di src/data/tech.js.
+// Logo ufficiali dei brand (Simple Icons), usati come ripiego quando in frontend/public/icons/ non c'e' un SVG.
+// La chiave e' il campo `icon` di frontend/src/data/tech.js.
 export const ICONS = {
   react: siReact,
   nodejs: siNodedotjs,
