@@ -4,7 +4,6 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { motion, useScroll, useSpring } from 'motion/react'
 import TargetCursor from './components/TargetCursor.jsx'
-import SplashCursor from './components/SplashCursor.jsx'
 import Marquee from './components/Marquee.jsx'
 import About from './components/About.jsx'
 import Experience from './components/Experience.jsx'
@@ -18,7 +17,13 @@ import { profile } from './data/profile.js'
 // Sezioni con scene 3D: caricate a pezzi (code splitting) per alleggerire il primo caricamento
 const Hero = lazy(() => import('./components/Hero.jsx'))
 const WhatIDo = lazy(() => import('./components/WhatIDo.jsx'))
-const TechStack = lazy(() => import('./components/TechStack.jsx'))
+const loadTechStack = () => import('./components/TechStack.jsx')
+const TechStack = lazy(loadTechStack)
+// Scarica il chunk (three + rapier) in background appena il browser e' libero, cosi' e' gia' pronto quando si scrolla
+if (typeof window !== 'undefined') {
+  const prefetch = () => loadTechStack()
+  window.addEventListener('load', () => ('requestIdleCallback' in window ? requestIdleCallback(prefetch) : setTimeout(prefetch, 1500)), { once: true })
+}
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -67,11 +72,8 @@ export default function App() {
   return (
     <>
       <motion.div className="progress" style={{ scaleX: progress }} />
-      {/* Cursori custom: solo con mouse (non su touch). La nube si spegne anche con "riduci movimento". */}
-      {finePointer && <TargetCursor spinDuration={2} cursorColorOnTarget="#c4f25b" parallaxOn hideDefaultCursor />}
-      {finePointer && !reduceMotion && (
-        <SplashCursor colors={['#c4f25b']} rainbow={false} colorSpeed={0} size={1} force={1} swirl={3} trail={1} clickSplash />
-      )}
+      {/* Cursore custom: solo con mouse (non su touch) */}
+      {finePointer && <TargetCursor spinDuration={2} cursorColor="#c4f25b" cursorColorOnTarget="#c4f25b" parallaxOn hideDefaultCursor />}
       <nav className="nav" aria-label="Principale">
         <a className="nav-brand cursor-target" href="#home" onClick={(e) => go(e, '#home')}>{profile.brand}</a>
         <a className="nav-mail cursor-target" href={`mailto:${contacts.email}`}>{contacts.email}</a>
@@ -94,7 +96,7 @@ export default function App() {
         <About />
         <Experience />
         <Work />
-        <LazyOnView>
+        <LazyOnView rootMargin="3000px 0px">
           <TechStack />
         </LazyOnView>
         <Contact />

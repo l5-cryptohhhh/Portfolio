@@ -7,6 +7,6 @@ export const contacts = {
     { label: 'LinkedIn', url: 'https://www.linkedin.com/in/manuel-nunziata/' }, // TODO: https://www.linkedin.com/in/...
     { label: 'GitHub', url: 'https://github.com/l5-cryptohhhh' }, // TODO: https://github.com/...
     { label: 'X', url: '' }, // TODO: opzionale, https://x.com/... (vuoto = non compare)
-    { label: 'Instagram', url: '' }, // TODO: opzionale, https://instagram.com/... (vuoto = non compare)
+    { label: 'Instagram', url: 'https://www.instagram.com/manuelnunziata_/' }, // TODO: opzionale, https://instagram.com/... (vuoto = non compare)
   ],
 }
