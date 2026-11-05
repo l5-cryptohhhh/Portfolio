@@ -81,12 +81,11 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; letter-spacing:
 }
 
 /* ---------- Marquee (unico della pagina) ---------- */
-.marquee { overflow: hidden; border-block: 1px solid var(--line); padding: 20px 0; }
-.marquee-track { display: flex; width: max-content; animation: scroll 32s linear infinite; }
-.marquee:hover .marquee-track { animation-play-state: paused; }
-.marquee-track span { font-family: var(--font-display); font-size: clamp(30px, 3.6vw, 52px); font-weight: 700; letter-spacing: -0.02em; white-space: nowrap; color: transparent; -webkit-text-stroke: 1px #3a3a46; }
-.marquee-track b { color: var(--accent); -webkit-text-stroke: 0; font-weight: 700; }
-@keyframes scroll { to { transform: translateX(-50%); } }
+.marquee { overflow: hidden; padding: 18px 0; }
+/* Come nel componente originale l'onda occupa tutta la larghezza; ritagliamo solo un po' di aria sopra e sotto (onda alta ~150 su 520 unita'). */
+.marquee-loop { --w: max(100vw, 900px); height: calc(var(--w) * 190 / 1200); }
+.marquee-loop .text-loop-svg { position: absolute; left: 50%; top: 50%; width: var(--w); transform: translate(-50%, -50%); }
+.marquee-loop .text-loop-text { font-family: var(--font-display); }
 
 /* ---------- What I do ---------- */
 .what { min-height: 100dvh; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 40px; padding: 0 6vw; }
@@ -229,6 +228,5 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; letter-spacing:
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .marquee-track { animation: none; }
   .card-img, .card-img img, .bracket::before, .bracket::after { transition: none; }
 }

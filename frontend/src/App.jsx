@@ -89,10 +89,10 @@ export default function App() {
         <Suspense fallback={<section className="hero" id="home" />}>
           <Hero />
         </Suspense>
-        <Marquee />
         <LazyOnView>
           <WhatIDo />
         </LazyOnView>
+        <Marquee />
         <About />
         <Experience />
         <Work />

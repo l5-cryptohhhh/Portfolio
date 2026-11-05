@@ -19,7 +19,7 @@ export const profile = {
   location: '', // TODO: opzionale, es. 'Roma, Italia'. Vuoto = non viene mostrato
 
   // Parole che scorrono nel marquee
-  keywords: ['DEVELOPER', 'DESIGNER', 'CREATIVE', 'FREELANCE'], // TODO: adatta
+  keywords: ['DEVELOPER', 'DESIGNER', 'CREATIVE'],
 
   // Sezione "What I do"
   services: [
