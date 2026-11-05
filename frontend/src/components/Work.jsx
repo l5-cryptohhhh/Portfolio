@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Reveal from './Reveal.jsx'
@@ -48,6 +48,45 @@ export default function Work() {
       })
     })
     return () => mm.revert()
+  }, [])
+
+  // Lo stato "hover" delle card lo calcoliamo noi: il :hover del browser si aggiorna solo se muovi il mouse,
+  // ma qui la pagina scorre con la rotellina e la card sotto il puntatore cambia a mouse fermo.
+  useEffect(() => {
+    let x = -1
+    let y = -1
+    let current = null
+    let raf = 0
+    const update = () => {
+      raf = 0
+      const card = x < 0 ? null : document.elementFromPoint(x, y)?.closest('.card') ?? null
+      if (card === current) return
+      current?.classList.remove('is-hover')
+      card?.classList.add('is-hover')
+      current = card
+    }
+    const schedule = () => {
+      if (!raf) raf = requestAnimationFrame(update)
+    }
+    const onMove = (e) => {
+      x = e.clientX
+      y = e.clientY
+      schedule()
+    }
+    const onLeave = () => {
+      x = -1
+      schedule()
+    }
+    window.addEventListener('pointermove', onMove, { passive: true })
+    window.addEventListener('scroll', schedule, { passive: true })
+    document.documentElement.addEventListener('pointerleave', onLeave)
+    return () => {
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('scroll', schedule)
+      document.documentElement.removeEventListener('pointerleave', onLeave)
+      cancelAnimationFrame(raf)
+      current?.classList.remove('is-hover')
+    }
   }, [])
 
   return (
