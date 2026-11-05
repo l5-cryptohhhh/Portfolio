@@ -3,17 +3,19 @@ import GlbScene from './GlbScene.jsx'
 import Reveal from './Reveal.jsx'
 
 import { profile } from '../data/profile.js'
+import { useLang } from '../i18n.jsx'
 
 // Metti la scena (personaggio alla scrivania) in /frontend/public/desk.glb
 const items = profile.services
 
 export default function WhatIDo() {
+  const { t, tr } = useLang()
   const reduce = useReducedMotion()
   return (
     <section className="what">
       <div className="what-3d">
         <GlbScene url="/desk.glb" />
-        <Reveal as="h2" className="what-title" lines={['WHAT', 'I DO']} accent={[1]} />
+        <Reveal as="h2" className="what-title" lines={t.titles.what} accent={[1]} />
       </div>
       <div className="what-list">
         {items.map((it, i) => (
@@ -26,7 +28,7 @@ export default function WhatIDo() {
             transition={{ type: 'spring', bounce: 0, duration: 0.9, delay: i * 0.12 }}
           >
             <h3>{it.title}</h3>
-            <p>{it.text}</p>
+            <p>{tr(it.text)}</p>
           </motion.div>
         ))}
       </div>

@@ -7,6 +7,7 @@ import Reveal from './Reveal.jsx'
 import SplitFlapText from './SplitFlapText.jsx'
 import SocialIcons from './SocialIcons.jsx'
 import { profile } from '../data/profile.js'
+import { useLang } from '../i18n.jsx'
 
 // Parole del tabellone (in maiuscolo) e numero di tessere = parola piu' lunga
 const ROLE_WORDS = profile.roles.map((r) => r.toUpperCase())
@@ -94,6 +95,7 @@ function useGlbExists(url) {
 }
 
 export default function Hero() {
+  const { tr } = useLang()
   const exists = useGlbExists(GLB_URL)
   const reduce = useReducedMotion()
   const ref = useRef()
@@ -112,7 +114,7 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: 'spring', bounce: 0, duration: 0.8, delay: 0.1 }}
         >
-          {profile.heroIntro}
+          {tr(profile.heroIntro)}
         </motion.small>
         <Reveal as="h1" lines={NAME_LINES} delay={0.2} />
       </motion.div>
@@ -122,7 +124,7 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: 'spring', bounce: 0, duration: 0.8, delay: 0.3 }}
         >
-          {profile.tagline}
+          {tr(profile.tagline)}
         </motion.small>
         {/* Tabellone a lamelle: tessere scure, lettere lime. La larghezza si adatta alla parola piu' lunga. */}
         <h2>

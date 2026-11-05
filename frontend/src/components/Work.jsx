@@ -3,6 +3,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Reveal from './Reveal.jsx'
 import { projects } from '../data/projects.js'
+import { useLang } from '../i18n.jsx'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -27,6 +28,7 @@ function untilt(e) {
 // scorre in orizzontale mentre scrolli in verticale (ScrollTrigger pin + scrub).
 // Su schermi piccoli o con "riduci movimento" niente pin: le card vanno in colonna (vedi styles.css).
 export default function Work() {
+  const { t, tr } = useLang()
   const root = useRef()
   const track = useRef()
 
@@ -92,13 +94,13 @@ export default function Work() {
   return (
     <section className="work" id="work" ref={root}>
       <div className="work-track" ref={track}>
-        <Reveal as="h2" className="work-title" lines={['My', 'Work']} accent={[1]} />
+        <Reveal as="h2" className="work-title" lines={t.titles.work} accent={[1]} />
         {projects.map((p, i) => {
           const n = String(i + 1).padStart(2, '0')
           const href = p.live || p.repo // la card intera porta al sito live, o al repo se manca
           const Main = href ? 'a' : 'div'
           const linkProps = href
-            ? { href, target: '_blank', rel: 'noopener noreferrer', 'aria-label': `Apri ${p.title}` }
+            ? { href, target: '_blank', rel: 'noopener noreferrer', 'aria-label': t.open(p.title) }
             : {}
           return (
             <article
@@ -112,24 +114,24 @@ export default function Work() {
                   {/* Senza immagine propria usa un segnaposto casuale (picsum) */}
                   <img
                     src={p.image || `https://picsum.photos/seed/portfolio-work-${n}/1260/600`}
-                    alt={`Anteprima di ${p.title}`}
+                    alt={t.preview(p.title)}
                     loading="lazy"
                     width="1260"
                     height="600"
                   />
                 </div>
                 <h3>{p.title}</h3>
-                <p className="card-desc">{p.description}</p>
+                <p className="card-desc">{tr(p.description)}</p>
                 <small>{p.tools.join(', ')}</small>
-                {href && <span className="card-cta">{p.live ? 'Clicca per visitare il sito' : 'Clicca per vedere il codice'} &#8599;</span>}
+                {href && <span className="card-cta">{p.live ? t.visit : t.seeCode} &#8599;</span>}
               </Main>
               {(p.live || p.repo) && (
                 <div className="card-links">
                   {p.live && (
-                    <a className="cursor-target" href={p.live} target="_blank" rel="noopener noreferrer">Live</a>
+                    <a className="cursor-target" href={p.live} target="_blank" rel="noopener noreferrer">{t.live}</a>
                   )}
                   {p.repo && (
-                    <a className="cursor-target" href={p.repo} target="_blank" rel="noopener noreferrer">Repo</a>
+                    <a className="cursor-target" href={p.repo} target="_blank" rel="noopener noreferrer">{t.repo}</a>
                   )}
                 </div>
               )}

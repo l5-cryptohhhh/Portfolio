@@ -6,6 +6,7 @@ import { CanvasTexture, Color, MathUtils, SRGBColorSpace, Vector3 } from 'three'
 import { tech as TECH } from '../data/tech.js'
 import { ICONS } from './techIcons.js'
 import Reveal from './Reveal.jsx'
+import { useLang } from '../i18n.jsx'
 
 // Disegna il logo + il nome sul canvas. `svg` e' l'immagine di frontend/public/icons (se c'e'), altrimenti si usa il logo di ripiego.
 function paint(g, { label, fallback, svg }) {
@@ -127,6 +128,7 @@ function Ball({ tech, position, active }) {
 }
 
 export default function TechStack() {
+  const { t } = useLang()
   // Griglia 4x4 leggermente sfalsata: partono già separate e senza sovrapposizioni
   const positions = useMemo(
     () =>
@@ -144,7 +146,7 @@ export default function TechStack() {
       onPointerEnter={() => (active.current = true)}
       onPointerLeave={() => (active.current = false)}
     >
-      <Reveal as="h2" className="stack-title" lines={['MY', 'TECHSTACK']} accent={[1]} />
+      <Reveal as="h2" className="stack-title" lines={t.titles.stack} accent={[1]} />
       <Canvas camera={{ position: [0, 0, 14], fov: 40 }} dpr={[1, 2]}>
         <ambientLight intensity={0.7} />
         <directionalLight position={[5, 5, 5]} intensity={1.8} color="#fffdf2" />

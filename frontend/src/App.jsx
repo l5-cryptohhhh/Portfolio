@@ -13,6 +13,7 @@ import LazyOnView from './components/LazyOnView.jsx'
 import useMedia from './hooks/useMedia.js'
 import { contacts } from './data/contacts.js'
 import { profile } from './data/profile.js'
+import { useLang } from './i18n.jsx'
 
 // Sezioni con scene 3D: caricate a pezzi (code splitting) per alleggerire il primo caricamento
 const Hero = lazy(() => import('./components/Hero.jsx'))
@@ -28,13 +29,14 @@ if (typeof window !== 'undefined') {
 gsap.registerPlugin(ScrollTrigger)
 
 const NAV = [
-  { label: 'About', hash: '#about' },
-  { label: 'Experience', hash: '#experience' },
-  { label: 'Work', hash: '#work' },
-  { label: 'Contact', hash: '#contact' },
+  { key: 'about', hash: '#about' },
+  { key: 'experience', hash: '#experience' },
+  { key: 'work', hash: '#work' },
+  { key: 'contact', hash: '#contact' },
 ]
 
 export default function App() {
+  const { lang, setLang, t } = useLang()
   const lenisRef = useRef(null)
   const finePointer = useMedia('(hover: hover) and (pointer: fine)')
   const reduceMotion = useMedia('(prefers-reduced-motion: reduce)')
@@ -74,15 +76,27 @@ export default function App() {
       <motion.div className="progress" style={{ scaleX: progress }} />
       {/* Cursore custom: solo con mouse (non su touch) */}
       {finePointer && <TargetCursor spinDuration={2} cursorColor="#c4f25b" cursorColorOnTarget="#c4f25b" parallaxOn hideDefaultCursor />}
-      <nav className="nav" aria-label="Principale">
-        <a className="nav-brand cursor-target" href="#home" onClick={(e) => go(e, '#home')}>{profile.brand}</a>
-        <a className="nav-mail cursor-target" href={`mailto:${contacts.email}`}>{contacts.email}</a>
+      <nav className="nav" aria-label={t.navLabel}>
+        <span className="nav-left">
+          <a className="nav-brand cursor-target" href="#home" onClick={(e) => go(e, '#home')}>
+            <img src="/logo.png" alt="" width="56" height="56" />
+            {profile.brand}
+          </a>
+          <a className="nav-mail cursor-target" href={`mailto:${contacts.email}`}>{contacts.email}</a>
+        </span>
         <div>
           {NAV.map((n) => (
             <a key={n.hash} className="cursor-target" href={n.hash} onClick={(e) => go(e, n.hash)}>
-              {n.label}
+              {t.nav[n.key]}
             </a>
           ))}
+          <span className="lang" role="group" aria-label={t.langLabel}>
+            {['it', 'en'].map((l) => (
+              <button key={l} type="button" className="cursor-target" aria-pressed={lang === l} onClick={() => setLang(l)}>
+                {l.toUpperCase()}
+              </button>
+            ))}
+          </span>
         </div>
       </nav>
       <main>

@@ -2,18 +2,14 @@ import { useState } from 'react'
 import Magnetic from './Magnetic.jsx'
 import Reveal from './Reveal.jsx'
 import { contacts } from '../data/contacts.js'
+import { useLang } from '../i18n.jsx'
 
 // Se VITE_FORM_ENDPOINT e' impostata (file .env) il form invia i dati a quell'indirizzo in POST (JSON).
 // Altrimenti apre il client di posta con il messaggio gia' scritto (mailto).
 const ENDPOINT = import.meta.env.VITE_FORM_ENDPOINT
 
-const MESSAGES = {
-  sent: 'Messaggio inviato. Ti rispondo appena posso.',
-  mailto: 'Si e\' aperto il tuo programma di posta: controlla e premi invia.',
-  error: 'Invio non riuscito. Riprova o scrivimi direttamente via email.',
-}
-
 export default function Contact() {
+  const { t } = useLang()
   const [status, setStatus] = useState('idle') // idle | sending | sent | mailto | error
 
   async function onSubmit(e) {
@@ -22,7 +18,7 @@ export default function Contact() {
     const data = Object.fromEntries(new FormData(form))
 
     if (!ENDPOINT) {
-      const subject = encodeURIComponent(`Messaggio dal portfolio da ${data.name}`)
+      const subject = encodeURIComponent(t.mailSubject(data.name))
       const body = encodeURIComponent(`${data.message}\n\n${data.name} (${data.email})`)
       window.location.href = `mailto:${contacts.email}?subject=${subject}&body=${body}`
       setStatus('mailto')
@@ -49,9 +45,9 @@ export default function Contact() {
   return (
     <section className="contact" id="contact">
       <div className="contact-intro">
-        <Reveal as="h2" lines={["Let's work", 'together.']} accent={[1]} />
+        <Reveal as="h2" lines={t.titles.contact} accent={[1]} />
         <Magnetic strength={0.4}>
-          <a className="contact-link cursor-target" data-cursor-label="Scrivimi" href={`mailto:${contacts.email}`}>
+          <a className="contact-link cursor-target" data-cursor-label={t.writeMe} href={`mailto:${contacts.email}`}>
             {contacts.email}
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M7 17L17 7M8 7h9v9" />
@@ -71,22 +67,22 @@ export default function Contact() {
 
       <form className="contact-form" onSubmit={onSubmit}>
         <label>
-          <span>Nome</span>
+          <span>{t.form.name}</span>
           <input name="name" type="text" autoComplete="name" required />
         </label>
         <label>
-          <span>Email</span>
+          <span>{t.form.email}</span>
           <input name="email" type="email" autoComplete="email" required />
         </label>
         <label>
-          <span>Messaggio</span>
+          <span>{t.form.message}</span>
           <textarea name="message" rows="5" required />
         </label>
         <button className="contact-link cursor-target" type="submit" disabled={status === 'sending'}>
-          {status === 'sending' ? 'Invio...' : 'Invia messaggio'}
+          {status === 'sending' ? t.form.sending : t.form.send}
         </button>
         <p className="form-status" role="status" aria-live="polite" data-state={status}>
-          {MESSAGES[status] || ''}
+          {t.status[status] || ''}
         </p>
       </form>
     </section>
