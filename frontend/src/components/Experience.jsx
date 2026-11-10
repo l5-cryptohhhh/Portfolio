@@ -31,7 +31,7 @@ export default function Experience() {
             <span className="timeline-period">{tr(job.period)}</span>
             <div className="timeline-body">
               <h3>{tr(job.role)}</h3>
-              <p className="timeline-company">{tr(job.company)}</p>
+              {job.company && <p className="timeline-company">{tr(job.company)}</p>}
               <p className="timeline-text">{tr(job.description)}</p>
               {job.tools?.length > 0 && (
                 <ul className="chips" aria-label={t.toolsUsed}>

@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import Lenis from 'lenis'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -18,6 +18,7 @@ import { useLang } from './i18n.jsx'
 // Sezioni con scene 3D: caricate a pezzi (code splitting) per alleggerire il primo caricamento
 const Hero = lazy(() => import('./components/Hero.jsx'))
 const WhatIDo = lazy(() => import('./components/WhatIDo.jsx'))
+const DeskScene = lazy(() => import('./components/DeskScene.jsx'))
 const loadTechStack = () => import('./components/TechStack.jsx')
 const TechStack = lazy(loadTechStack)
 // Scarica il chunk (three + rapier) in background appena il browser e' libero, cosi' e' gia' pronto quando si scrolla
@@ -35,11 +36,17 @@ const NAV = [
   { key: 'contact', hash: '#contact' },
 ]
 
-export default function App() {
+export default function App({ entered = true }) {
   const { lang, setLang, t } = useLang()
   const lenisRef = useRef(null)
   const finePointer = useMedia('(hover: hover) and (pointer: fine)')
   const reduceMotion = useMedia('(prefers-reduced-motion: reduce)')
+  // Scena 3D: su desktop resta ferma sullo schermo dalla hero a "Cosa faccio" e la camera segue lo scroll.
+  // Su mobile o con "riduci movimento" sta solo nella hero, con inquadratura fissa sul viso.
+  const sceneScroll = useMedia('(min-width: 801px)') && !reduceMotion
+  const sceneTrack = useRef(null)
+  const [sceneReady, setSceneReady] = useState(false)
+  const onSceneReady = useCallback(() => setSceneReady(true), [])
 
   // Barra di avanzamento: dice a che punto sei della pagina
   const { scrollYProgress } = useScroll()
@@ -75,7 +82,7 @@ export default function App() {
     <>
       <motion.div className="progress" style={{ scaleX: progress }} />
       {/* Cursore custom: solo con mouse (non su touch) */}
-      {finePointer && <TargetCursor spinDuration={2} cursorColor="#c4f25b" cursorColorOnTarget="#c4f25b" parallaxOn hideDefaultCursor />}
+      {entered && finePointer && <TargetCursor spinDuration={2} cursorColor="#c4f25b" cursorColorOnTarget="#c4f25b" parallaxOn hideDefaultCursor />}
       <nav className="nav" aria-label={t.navLabel}>
         <span className="nav-left">
           <a className="nav-brand cursor-target" href="#home" onClick={(e) => go(e, '#home')}>
@@ -100,12 +107,21 @@ export default function App() {
         </div>
       </nav>
       <main>
-        <Suspense fallback={<section className="hero" id="home" />}>
-          <Hero />
-        </Suspense>
-        <LazyOnView>
-          <WhatIDo />
-        </LazyOnView>
+        <div className={sceneScroll ? 'scene-track is-scroll' : 'scene-track'} ref={sceneTrack}>
+          <div className="scene-stage" aria-hidden="true">
+            {/* Segnaposto leggero finche' i modelli non sono pronti */}
+            <div className={sceneReady ? 'scene-fallback is-hidden' : 'scene-fallback'} />
+            <Suspense fallback={null}>
+              <DeskScene trackRef={sceneTrack} scrub={sceneScroll} reduce={reduceMotion} onReady={onSceneReady} />
+            </Suspense>
+          </div>
+          <Suspense fallback={<section className="hero" id="home" />}>
+            <Hero />
+          </Suspense>
+          <LazyOnView>
+            <WhatIDo />
+          </LazyOnView>
+        </div>
         <Marquee />
         <About />
         <Experience />

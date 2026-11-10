@@ -12,13 +12,13 @@ export const profile = {
   // About
   headline: { it: 'Sviluppo siti e web app con cura per i dettagli.', en: 'I build websites and web apps with an eye for detail.' }, // TODO: frase d'apertura
   bio: [
-    {
-      it: 'TODO: scrivi qui 2 o 3 frasi su chi sei, cosa fai e cosa ti piace costruire.',
-      en: 'TODO: write 2 or 3 sentences here about who you are, what you do and what you like to build.',
+    { // TODO: rivedi e aggiusta questo paragrafo con parole tue
+      it: 'Sono un Full-Stack AI Developer: mi dedico allo sviluppo di software e di applicazioni web, dal frontend con React e TypeScript al backend con Java, Spring e PostgreSQL. Ho completato il percorso AI Full-Stack Developer di Epicode nel 2026, dove ho imparato anche a integrare le API degli LLM nei miei progetti. Mi piace trasformare un\'idea in un prodotto funzionante, curato nei dettagli e sicuro.',
+      en: 'I am a Full-Stack AI Developer: I focus on software and web application development, from the frontend with React and TypeScript to the backend with Java, Spring and PostgreSQL. I completed the Epicode AI Full-Stack Developer course in 2026, where I also learned to integrate LLM APIs into my projects. I like turning an idea into a working product that is polished and secure.',
     },
     {
-      it: 'TODO: un secondo paragrafo (percorso, interessi, cosa cerchi adesso).',
-      en: 'TODO: a second paragraph (background, interests, what you are looking for now).',
+      it: 'Il mio percorso di studi: Graduation Certificate in AI Full-Stack Developer, conseguito il 28/10/2026 presso Epicode Institute of Technology. Ho studiato programmazione a oggetti, Java e Spring, database con PostgreSQL e JPA, sviluppo frontend con JavaScript, TypeScript, React e Redux, comunicazione in tempo reale con WebSocket, oltre a testing, sicurezza (SQLi, XSS e CSRF) e integrazione di LLM. Ora sto cercando lavoro come Full-Stack Developer.',
+      en: 'My education: Graduation Certificate in AI Full-Stack Developer, awarded on 28/10/2026 by Epicode Institute of Technology. I studied object-oriented programming, Java and Spring, databases with PostgreSQL and JPA, frontend development with JavaScript, TypeScript, React and Redux, real-time communication with WebSocket, plus testing, security (SQLi, XSS and CSRF) and LLM integration. I am now looking for a job as a Full-Stack Developer.',
     },
   ],
   photo: '/me.jpg', // file in frontend/public/me.jpg. Se manca compare il riquadro con le iniziali

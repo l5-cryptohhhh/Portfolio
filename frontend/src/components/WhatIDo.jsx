@@ -1,11 +1,9 @@
 import { motion, useReducedMotion } from 'motion/react'
-import GlbScene from './GlbScene.jsx'
 import Reveal from './Reveal.jsx'
 
 import { profile } from '../data/profile.js'
 import { useLang } from '../i18n.jsx'
 
-// Metti la scena (personaggio alla scrivania) in /frontend/public/desk.glb
 const items = profile.services
 
 export default function WhatIDo() {
@@ -14,7 +12,6 @@ export default function WhatIDo() {
   return (
     <section className="what">
       <div className="what-3d">
-        <GlbScene url="/desk.glb" />
         <Reveal as="h2" className="what-title" lines={t.titles.what} accent={[1]} />
       </div>
       <div className="what-list">
