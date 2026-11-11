@@ -8,7 +8,7 @@ import { ACESFilmicToneMapping, AgXToneMapping, AnimationMixer, CanvasTexture, C
 // Personaggio seduto alla scrivania: testa che segue il mouse, mani che battono, camera legata allo scroll.
 // La scena resta ferma sullo schermo dalla hero (viso in primo piano) a "Cosa faccio" (campo lungo sulla scrivania).
 // I modelli stanno in frontend/public/models. Unita' in metri, Y in alto, il personaggio guarda verso +Z.
-const CHARACTER_URL = '/models/character.glb?v=5' // ?v=5: il browser non riusa la versione precedente del modello
+const CHARACTER_URL = '/models/character.glb?v=6' // ?v=6: il browser non riusa la versione precedente del modello
 const DESK_URL = '/models/desk-set.glb'
 
 // Scarica e interpreta i modelli appena questo modulo viene caricato (App.jsx lo carica subito, mentre c'e' il PLAY)
