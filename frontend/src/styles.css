@@ -63,9 +63,13 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; letter-spacing:
 
 /* ---------- Scena 3D: ferma sullo schermo dalla hero a "Cosa faccio" ---------- */
 .scene-track { position: relative; overflow-x: clip; } /* i blocchi che entrano da destra non allargano la pagina */
-/* Base (mobile e "riduci movimento"): la scena sta solo nella hero e scorre via con lei */
+/* La scena sta nel "pin": su desktop il contenitore (stage) e' sticky; su telefono lo stage resta nel flusso come segnaposto e il pin
+   viene fissato da JS (vedi Rig in DeskScene.jsx), perche' sticky su iOS/WebKit e' fragile e a volte la scena saliva con la pagina. */
 .scene-stage {
   position: absolute; top: 0; left: 0; right: 0; height: 100dvh; z-index: 1; pointer-events: none;
+}
+.scene-pin {
+  position: absolute; inset: 0;
   -webkit-mask-image: linear-gradient(to bottom, #000 84%, transparent); mask-image: linear-gradient(to bottom, #000 84%, transparent);
   /* Dietro al canvas trasparente: nero (colore del sito) con un alone viola in basso al centro */
   background: radial-gradient(ellipse 65% 50% at 50% 82%, rgb(122 60 255 / 0.34), rgb(122 60 255 / 0.1) 45%, transparent 72%);
@@ -277,7 +281,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; letter-spacing:
   /* "Riduci movimento": scena ferma nella hero, solo viso e spalle sopra i testi */
   .scene-track:not(.is-scroll) .scene-stage { top: 9dvh; height: 50dvh; }
   /* Scena legata allo scroll anche qui. svh: l'altezza non salta quando la barra del browser compare o sparisce */
-  .scene-track.is-scroll .scene-stage { height: 100svh; }
+  .scene-track.is-scroll .scene-stage { position: relative; height: 100svh; } /* niente sticky: il pin e' fissato da JS */
   .scene-track.is-scroll > .hero { margin-top: -100svh; }
   /* Una schermata intera per la scrivania, con il titolo in alto; poi l'elenco le scorre sopra come un pannello pieno */
   .scene-track.is-scroll .what-3d { height: calc(100svh - 96px); }

@@ -185,11 +185,13 @@ export default function App({ entered = true, onReady }) {
       <main>
         <div className={sceneScroll ? 'scene-track is-scroll' : 'scene-track'} ref={sceneTrack}>
           <div className="scene-stage" aria-hidden="true">
-            {/* Segnaposto leggero finche' i modelli non sono pronti */}
-            <div className={sceneReady ? 'scene-fallback is-hidden' : 'scene-fallback'} />
-            <Suspense fallback={null}>
-              <DeskScene trackRef={sceneTrack} scrub={sceneScroll} reduce={reduceMotion} onReady={onSceneReady} />
-            </Suspense>
+            <div className="scene-pin">
+              {/* Segnaposto leggero finche' i modelli non sono pronti */}
+              <div className={sceneReady ? 'scene-fallback is-hidden' : 'scene-fallback'} />
+              <Suspense fallback={null}>
+                <DeskScene trackRef={sceneTrack} scrub={sceneScroll} reduce={reduceMotion} onReady={onSceneReady} />
+              </Suspense>
+            </div>
           </div>
           <Suspense fallback={<section className="hero" id="home" />}>
             <Hero />

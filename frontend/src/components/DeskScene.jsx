@@ -914,10 +914,39 @@ function Models({ animate, progress, onReady, low }) {
 const _pos = new Vector3()
 const _look = new Vector3()
 
+// Telefono: la scena e' ferma sullo schermo finche' la sezione e' visibile, senza usare position: sticky (fragile su iOS).
+// Tre stati, ricalcolati dalla geometria reale a ogni frame: all'inizio sta in cima alla sezione, poi e' fissa alla finestra,
+// alla fine resta in fondo alla sezione e sale via con lei. Nel punto di passaggio le posizioni coincidono: nessun salto.
+function pinStage(track, stage, pin, memo) {
+  const h = stage.offsetHeight
+  const r = track.getBoundingClientRect()
+  const mode = r.top >= 0 ? 'start' : r.bottom > h ? 'fixed' : 'end'
+  const endTop = Math.max(0, Math.round(track.offsetHeight - h))
+  const key = `${mode}|${h}|${mode === 'end' ? endTop : 0}`
+  if (memo.key === key) return mode
+  memo.key = key
+  const s = pin.style
+  s.left = '0'
+  s.right = '0'
+  s.bottom = ''
+  s.height = `${h}px`
+  s.position = mode === 'fixed' ? 'fixed' : 'absolute'
+  s.top = mode === 'end' ? `${endTop}px` : '0'
+  return mode
+}
+function unpinStage(pin, memo) {
+  if (!memo.key) return
+  memo.key = ''
+  pin.removeAttribute('style')
+}
+
 // Camera: con `scrub` segue lo scroll (0 = viso nella hero, 1 = campo lungo), altrimenti resta sul viso
 function Rig({ trackRef, scrub, progress, reduce }) {
   const started = useRef(false)
   const stageEl = useRef(null)
+  const pinEl = useRef(null)
+  const pinMemo = useRef({ key: '' })
+  const pinMode = useRef('')
   const invalidate = useThree((st) => st.invalidate)
   // Con "riduci movimento" il render e' a richiesta: ogni scroll o resize ne chiede uno
   useEffect(() => {
@@ -936,7 +965,14 @@ function Rig({ trackRef, scrub, progress, reduce }) {
     if (scrub && trackRef.current) {
       // La transizione dura una schermata di scroll: finisce quando "Cosa faccio" arriva in cima.
       // Si divide per l'altezza della scena (100svh, stabile): clientHeight cambia quando la barra del browser compare o sparisce
-      if (!stageEl.current || !stageEl.current.isConnected) stageEl.current = trackRef.current.querySelector('.scene-stage')
+      if (!stageEl.current || !stageEl.current.isConnected) {
+        stageEl.current = trackRef.current.querySelector('.scene-stage')
+        pinEl.current = trackRef.current.querySelector('.scene-pin')
+      }
+      if (stageEl.current && pinEl.current) {
+        if (size.width <= 800) pinMode.current = pinStage(trackRef.current, stageEl.current, pinEl.current, pinMemo.current)
+        else unpinStage(pinEl.current, pinMemo.current)
+      }
       const r = trackRef.current.getBoundingClientRect()
       to = MathUtils.clamp(-r.top / (stageEl.current?.offsetHeight || document.documentElement.clientHeight), 0, 1)
     }
@@ -962,6 +998,19 @@ function Rig({ trackRef, scrub, progress, reduce }) {
     const shiftX = oneColumn ? 0 : SHIFT * MathUtils.smoothstep(p, 0.2, 1)
     const shiftY = oneColumn ? HERO_LIFT * (1 - MathUtils.smoothstep(p, 0, 0.6)) : 0
     camera.setViewOffset(size.width, size.height, shiftX * size.width, shiftY * size.height, size.width, size.height)
+    if (DEBUG && trackRef.current) {
+      let box = document.getElementById('dbg-box')
+      if (!box) {
+        box = document.createElement('div')
+        box.id = 'dbg-box'
+        box.style.cssText = 'position:fixed;left:6px;bottom:96px;z-index:99999;background:rgba(0,0,0,.78);color:#c4f25b;font:11px/1.35 monospace;padding:6px 8px;border-radius:8px;pointer-events:none;white-space:pre'
+        document.body.appendChild(box)
+      }
+      const tr = trackRef.current.getBoundingClientRect()
+      box.textContent = `scrollY ${Math.round(window.scrollY)} | inner ${window.innerHeight} | doc ${document.documentElement.clientHeight}
+track top ${Math.round(tr.top)} bottom ${Math.round(tr.bottom)} h ${Math.round(tr.height)}
+pin ${pinMode.current || '-'} | p ${p.toFixed(2)} | canvas ${size.width}x${size.height}`
+    }
     if (DEBUG) window.__dbg = { p, to, aspect, back, size: [size.width, size.height], pos: camera.position.toArray().map((v) => +v.toFixed(3)), look: _look.toArray().map((v) => +v.toFixed(3)), docH: document.documentElement.clientHeight, innerH: window.innerHeight }
   })
   return null
