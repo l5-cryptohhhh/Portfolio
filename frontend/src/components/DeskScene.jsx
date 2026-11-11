@@ -3,6 +3,7 @@ import { ContactShadows, Environment, Lightformer, MeshReflectorMaterial, Perfor
 import { Bloom, DepthOfField, EffectComposer, N8AO, SMAA, ToneMapping, Vignette } from '@react-three/postprocessing'
 import { ToneMappingMode } from 'postprocessing'
 import { Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { trackLoader, markMounted } from '../loadTrack.js'
 import { ACESFilmicToneMapping, AgXToneMapping, AnimationMixer, CanvasTexture, CatmullRomCurve3, Color, LinearFilter, LinearMipmapLinearFilter, LoopOnce, MathUtils, Matrix4, MeshPhysicalMaterial, MeshStandardMaterial, NeutralToneMapping, NoToneMapping, Quaternion, RepeatWrapping, SRGBColorSpace, Vector2, Vector3 } from 'three'
 
 // Personaggio seduto alla scrivania: testa che segue il mouse, mani che battono, camera legata allo scroll.
@@ -17,8 +18,8 @@ const bootLog = (msg) => DEBUG && console.log(`[boot ${Math.round(performance.no
 bootLog('modulo della scena caricato (il decoder meshopt e' + "'" + ' dentro questo bundle: nessun decoder esterno)')
 
 // Scarica e interpreta i modelli appena questo modulo viene caricato (App.jsx lo carica subito, mentre c'e' il PLAY)
-useGLTF.preload(CHARACTER_URL)
-useGLTF.preload(DESK_URL)
+useGLTF.preload(CHARACTER_URL, undefined, undefined, trackLoader) // trackLoader: il loader legge i byte scaricati
+useGLTF.preload(DESK_URL, undefined, undefined, trackLoader)
 
 const deg = MathUtils.degToRad
 const X = new Vector3(1, 0, 0)
@@ -625,6 +626,7 @@ function Models({ animate, progress, onReady, low }) {
       bootLog(missing.length || missingClips.length ? `ATTENZIONE mancano ossa: [${missing.join(', ')}] clip: [${missingClips.join(', ')}]` : 'controllo ossa e clip: tutto presente (dita 1-2-3 x 4 x 2 mani, EyelidLeft/Right, Blink, TypeFingers, baselayer)')
     }
     rig.current = sit(character)
+    markMounted()
     headBone.current = character.getObjectByName('Head')
     hands.current = ['Left', 'Right'].map((side) => ({
       fingers: collectFingers(character, side),

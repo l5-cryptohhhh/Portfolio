@@ -24,12 +24,6 @@ const DeskScene = lazy(loadDeskScene)
 if (typeof window !== 'undefined') loadDeskScene()
 const loadTechStack = () => import('./components/TechStack.jsx')
 const TechStack = lazy(loadTechStack)
-// Scarica il chunk (three + rapier) in background appena il browser e' libero, cosi' e' gia' pronto quando si scrolla
-if (typeof window !== 'undefined') {
-  const prefetch = () => loadTechStack()
-  window.addEventListener('load', () => ('requestIdleCallback' in window ? requestIdleCallback(prefetch) : setTimeout(prefetch, 1500)), { once: true })
-}
-
 gsap.registerPlugin(ScrollTrigger)
 
 const NAV = [
@@ -77,6 +71,14 @@ export default function App({ entered = true, onReady }) {
     mq.addEventListener('change', close)
     return () => mq.removeEventListener('change', close)
   }, [])
+
+  // Il chunk pesante del techstack (three + rapier, ~0,8 MB) si scarica solo a loader sparito: durante il caricamento
+  // non deve competere sulla rete con il personaggio 3D
+  useEffect(() => {
+    if (!entered) return
+    const id = 'requestIdleCallback' in window ? requestIdleCallback(() => loadTechStack(), { timeout: 2000 }) : setTimeout(() => loadTechStack(), 800)
+    return () => ('requestIdleCallback' in window ? cancelIdleCallback(id) : clearTimeout(id))
+  }, [entered])
 
   // Dopo font, immagini e caricamento: ricalcola le posizioni di ScrollTrigger (due rAF dopo che il loader e' sparito, poi a ogni evento che puo' cambiare il layout)
   useEffect(() => {
@@ -202,7 +204,7 @@ export default function App({ entered = true, onReady }) {
         <About />
         <Experience />
         <Work />
-        <LazyOnView rootMargin="3000px 0px" idle>
+        <LazyOnView rootMargin="3000px 0px" idle={entered}>
           <TechStack />
         </LazyOnView>
         <Contact />

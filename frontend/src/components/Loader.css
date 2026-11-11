@@ -1,7 +1,7 @@
 /* Schermata iniziale con tasto PLAY (stile uiverse.io, ricolorato con il lime del sito) */
 .loader {
   position: fixed; inset: 0; z-index: 1000;
-  display: grid; place-items: center;
+  display: grid; grid-template-columns: minmax(0, 1fr); place-items: center; /* minmax(0,...): contenuti larghi (le fasce) non allargano la colonna */
   background: var(--bg);
   transition: opacity 0.6s var(--ease);
 }
@@ -148,3 +148,21 @@
   transform: rotateX(90deg) translateZ(-40px); filter: blur(12px);
 }
 @media (prefers-reduced-motion: reduce) { .pyramid-loader .wrapper { animation: none; } }
+
+/* Telefono: al posto dell'anello di testo, due fasce di parole che scorrono in loop sopra e sotto il tasto (con un po' d'aria) */
+.loader-phone { display: flex; flex-direction: column; align-items: center; gap: clamp(32px, 6vh, 56px); width: 100%; min-width: 0; }
+.loader-phone-center { /* stesso font-size del tasto; altezza fissa quanto serve allo spinner con la percentuale: le fasce non si spostano mai quando premi PLAY */
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-size: clamp(18px, 2.4vw, 26px); height: 15em;
+}
+.loader-band { width: 100%; overflow: hidden; }
+.loader-band-track {
+  display: flex; width: max-content; will-change: transform;
+  animation: ld-band 30s linear infinite;
+  font-family: var(--font-display); font-weight: 700; font-size: clamp(26px, 8.5vw, 38px); line-height: 1.1;
+  color: var(--accent); white-space: pre;
+}
+.loader-band-track > span { flex: none; }
+@keyframes ld-band { to { transform: translateX(-50%); } }
+.loader-band--reverse .loader-band-track { animation-direction: reverse; } /* la fascia sotto scorre al contrario: verso destra */
+@media (prefers-reduced-motion: reduce) { .loader-band-track { animation: none; } }
