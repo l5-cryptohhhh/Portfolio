@@ -52,20 +52,23 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; letter-spacing:
 .nav-brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; letter-spacing: -0.01em; }
 .nav-brand img { width: 56px; height: 56px; margin: -8px -2px -8px 0; object-fit: contain; }
 .nav-mail { font-family: var(--font-body); font-size: 15px; font-weight: 400; }
-.nav div { justify-self: end; display: flex; gap: clamp(20px, 3.4vw, 56px); text-transform: uppercase; }
-.nav div a { padding: 6px 2px; transition: opacity 0.3s var(--ease); }
-.nav div a:hover { opacity: 0.6; }
+.nav .nav-links { justify-self: end; display: flex; gap: clamp(20px, 3.4vw, 56px); text-transform: uppercase; }
+.nav .nav-links a { padding: 6px 2px; transition: opacity 0.3s var(--ease); }
+.nav .nav-links a:hover { opacity: 0.6; }
+.nav-burger, .menu-panel { display: none; } /* solo telefono, vedi in fondo */
 .lang { display: inline-flex; gap: 2px; pointer-events: auto; }
 .lang button { background: none; border: 0; cursor: inherit; padding: 6px 7px; font: inherit; color: var(--muted); letter-spacing: 0.04em; transition: color 0.3s var(--ease); }
 .lang button:hover { color: var(--fg); }
 .lang button[aria-pressed='true'] { color: var(--accent); }
 
 /* ---------- Scena 3D: ferma sullo schermo dalla hero a "Cosa faccio" ---------- */
-.scene-track { position: relative; }
+.scene-track { position: relative; overflow-x: clip; } /* i blocchi che entrano da destra non allargano la pagina */
 /* Base (mobile e "riduci movimento"): la scena sta solo nella hero e scorre via con lei */
 .scene-stage {
   position: absolute; top: 0; left: 0; right: 0; height: 100dvh; z-index: 1; pointer-events: none;
   -webkit-mask-image: linear-gradient(to bottom, #000 84%, transparent); mask-image: linear-gradient(to bottom, #000 84%, transparent);
+  /* Dietro al canvas trasparente: nero (colore del sito) con un alone viola in basso al centro */
+  background: radial-gradient(ellipse 65% 50% at 50% 82%, rgb(122 60 255 / 0.34), rgb(122 60 255 / 0.1) 45%, transparent 72%);
 }
 /* Desktop: resta incollata mentre hero e "Cosa faccio" le scorrono sopra, poi esce verso l'alto */
 .scene-track.is-scroll .scene-stage { position: sticky; height: 100vh; }
@@ -78,11 +81,11 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; letter-spacing:
 
 /* ---------- Hero ---------- */
 .hero { position: relative; min-height: 100dvh; height: 100dvh; overflow: hidden; }
-.hero::before { /* bagliore lime sotto il personaggio */
+.hero::before { /* bagliore viola sotto il personaggio (era lime: sul fondo viola faceva una macchia verde-oliva) */
   content: ''; position: absolute; inset: 0; pointer-events: none;
   background:
-    radial-gradient(ellipse 38% 34% at 50% 100%, rgb(196 242 91 / 0.28), transparent 70%),
-    radial-gradient(ellipse 22% 30% at 0% 0%, rgb(196 242 91 / 0.10), transparent 70%);
+    radial-gradient(ellipse 38% 34% at 50% 100%, rgb(122 60 255 / 0.28), transparent 70%),
+    radial-gradient(ellipse 22% 30% at 0% 0%, rgb(122 60 255 / 0.10), transparent 70%);
 }
 .hero-text { position: absolute; bottom: 42%; z-index: 2; pointer-events: none; }
 .hero-text.left { left: clamp(24px, 14vw, 280px); }
@@ -102,7 +105,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; letter-spacing:
 }
 
 /* ---------- Marquee (unico della pagina) ---------- */
-.marquee { overflow: hidden; padding: 18px 0; }
+.marquee { position: relative; overflow: hidden; padding: 18px 0; } /* relative: senza, la striscia larga 900px non verrebbe ritagliata e allargherebbe la pagina */
 /* Come nel componente originale l'onda occupa tutta la larghezza; ritagliamo solo un po' di aria sopra e sotto (onda alta ~150 su 520 unita'). */
 .marquee-loop { --w: max(100vw, 900px); height: calc(var(--w) * 190 / 1200); }
 .marquee-loop .text-loop-svg { position: absolute; left: 50%; top: 50%; width: var(--w); transform: translate(-50%, -50%); }
@@ -128,8 +131,14 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; letter-spacing:
 
 /* ---------- About ---------- */
 .about { min-height: 100dvh; display: grid; grid-template-columns: 5fr 7fr; align-items: center; gap: clamp(32px, 6vw, 96px); padding: 120px 6vw; }
-.about-photo { aspect-ratio: 4 / 5; border-radius: var(--radius); overflow: hidden; background: var(--surface); border: 1px solid var(--line); max-width: 460px; width: 100%; }
-.about-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.about-card { width: 100%; max-width: 420px; }
+/* Dentro la scheda metallica: la foto con un filo di bordo, nome e ruolo sotto */
+.about-card-inner { display: flex; flex-direction: column; gap: 14px; height: 100%; }
+.about-card-photo { flex: 1; min-height: 0; border-radius: 14px; overflow: hidden; background: var(--surface); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08); }
+.about-card-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.about-card-id { text-shadow: 0 1px 3px rgb(0 0 0 / 0.55); } /* resta leggibile anche quando il riflesso del metallo schiarisce la fascia */
+.about-card-id h3 { font-size: 18px; letter-spacing: -0.01em; }
+.about-card-id p { margin-top: 2px; color: rgb(244 244 245 / 0.85); font-size: 14px; }
 .about-photo-empty { width: 100%; height: 100%; display: grid; place-items: center; background: linear-gradient(160deg, var(--surface), #1b1b23); }
 .about-photo-empty span { font-family: var(--font-display); font-weight: 700; font-size: clamp(48px, 7vw, 100px); color: transparent; -webkit-text-stroke: 1px var(--accent); }
 .about-body { display: flex; flex-direction: column; gap: 22px; }
@@ -142,7 +151,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; letter-spacing:
 .about-meta { font-family: var(--font-mono); font-size: 12px; color: var(--accent); }
 
 /* ---------- Experience ---------- */
-.experience { padding: 120px 6vw; }
+.experience { padding: 120px 6vw; overflow-x: clip; } /* le voci entrano da destra: non devono allargare la pagina */
 .experience-title { font-size: clamp(28px, 4.6vw, 72px); line-height: 1; margin-bottom: clamp(40px, 6vw, 80px); }
 .timeline { position: relative; list-style: none; display: flex; flex-direction: column; gap: 56px; max-width: 980px; padding-left: 32px; }
 .timeline-rail { position: absolute; left: 0; top: 6px; bottom: 6px; width: 1px; background: var(--line); }
@@ -228,19 +237,51 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; letter-spacing:
 
 /* ---------- Mobile ---------- */
 @media (max-width: 800px) {
-  .nav { grid-template-columns: 1fr auto; padding: 18px 20px; font-size: 11px; }
-  .nav-mail { display: none; }
-  .nav div { gap: 16px; }
+  /* Barra: logo a sinistra, hamburger a destra. Le sezioni stanno nel pannello a scomparsa */
+  .nav { grid-template-columns: 1fr auto; padding: 10px 4vw 8px; }
+  .nav-mail, .nav .nav-links { display: none; }
+  .nav-brand img { width: 40px; height: 40px; margin: -4px -2px -4px 0; }
+  .nav-burger {
+    display: inline-flex; flex-direction: column; justify-content: center; gap: 7px; pointer-events: auto;
+    width: 44px; height: 44px; padding: 0 10px; background: none; border: 0; color: inherit; cursor: pointer;
+  }
+  .nav-burger span { display: block; height: 2px; background: currentColor; transition: transform 0.35s var(--ease); }
+  .nav-burger[aria-expanded='true'] span:first-child { transform: translateY(4.5px) rotate(45deg); }
+  .nav-burger[aria-expanded='true'] span:last-child { transform: translateY(-4.5px) rotate(-45deg); }
+  .menu-panel {
+    position: fixed; inset: 0; z-index: 59; display: flex; flex-direction: column; justify-content: center; gap: 6px;
+    padding: 80px 8vw 48px; background: var(--bg); color: var(--fg);
+    font-family: var(--font-display); text-transform: uppercase;
+    opacity: 0; visibility: hidden; transition: opacity 0.7s var(--ease), visibility 0s 0.7s;
+  }
+  .menu-panel.is-open { opacity: 1; visibility: visible; transition: opacity 0.7s var(--ease); }
+  /* Le voci arrivano una dopo l'altra, salendo piano piano; in chiusura spariscono insieme */
+  .menu-panel > * { opacity: 0; transform: translateY(14px); transition: opacity 0.35s var(--ease), transform 0.35s var(--ease); }
+  .menu-panel.is-open > * { opacity: 1; transform: none; transition: opacity 0.8s var(--ease), transform 0.9s var(--ease); }
+  .menu-panel.is-open > :nth-child(1) { transition-delay: 0.15s; }
+  .menu-panel.is-open > :nth-child(2) { transition-delay: 0.25s; }
+  .menu-panel.is-open > :nth-child(3) { transition-delay: 0.35s; }
+  .menu-panel.is-open > :nth-child(4) { transition-delay: 0.45s; }
+  .menu-panel.is-open > :nth-child(5) { transition-delay: 0.6s; }
+  .menu-panel > a { font-size: clamp(30px, 9vw, 44px); font-weight: 700; letter-spacing: -0.01em; padding: 10px 0; }
+  .menu-panel .lang { margin-top: 24px; font-size: 15px; }
   .hero-text { bottom: 30%; }
   .hero-text.left { left: 20px; }
   .hero-text.right { right: 20px; bottom: 18%; }
-  .hero-socials { flex-direction: row; left: 20px; bottom: 5%; gap: 22px; }
+  /* Social in colonna sotto il logo, dentro la hero: scorrono via con lei invece di fluttuare in basso */
+  .hero-socials { flex-direction: column; left: 4vw; top: 64px; bottom: auto; gap: 18px; }
   .what { grid-template-columns: 1fr; padding-top: 96px; }
-  .scene-stage { top: 9dvh; height: 50dvh; } /* solo viso e spalle, sopra i testi della hero */
-  .what-3d { height: auto; }
+  /* "Riduci movimento": scena ferma nella hero, solo viso e spalle sopra i testi */
+  .scene-track:not(.is-scroll) .scene-stage { top: 9dvh; height: 50dvh; }
+  /* Scena legata allo scroll anche qui. svh: l'altezza non salta quando la barra del browser compare o sparisce */
+  .scene-track.is-scroll .scene-stage { height: 100svh; }
+  .scene-track.is-scroll > .hero { margin-top: -100svh; }
+  /* Una schermata intera per la scrivania, con il titolo in alto; poi l'elenco le scorre sopra come un pannello pieno */
+  .scene-track.is-scroll .what-3d { height: calc(100svh - 96px); }
+  .scene-track.is-scroll .what-list { background: var(--bg); margin: 0 -6vw; padding: 48px 6vw; }
+  .scene-track:not(.is-scroll) .what-3d { height: auto; }
   .what-3d .what-title { position: static; transform: none; }
   .about, .contact { grid-template-columns: 1fr; padding: 96px 6vw; }
-  .about-photo { max-width: 320px; }
   .experience { padding: 96px 6vw; }
   .timeline-item { grid-template-columns: 1fr; gap: 6px; }
   .contact-link { font-size: 15px; padding: 16px 24px; }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import Loader from './components/Loader.jsx'
@@ -9,6 +9,8 @@ import { LangProvider } from './i18n.jsx'
 function Root() {
   const [started, setStarted] = useState(false)
   const [ready, setReady] = useState(false)
+  const [sceneReady, setSceneReady] = useState(false) // il personaggio 3D e' gia' disegnato
+  const onSceneReady = useCallback(() => setSceneReady(true), [])
 
   // Finche' la schermata e' visibile la pagina non scorre
   useEffect(() => {
@@ -21,8 +23,8 @@ function Root() {
 
   return (
     <LangProvider>
-      {started && <App entered={ready} />}
-      {!ready && <Loader started={started} onStart={() => setStarted(true)} onDone={() => setReady(true)} />}
+      {started && <App entered={ready} onReady={onSceneReady} />}
+      {!ready && <Loader started={started} sceneReady={sceneReady} onStart={() => setStarted(true)} onDone={() => setReady(true)} />}
     </LangProvider>
   )
 }

@@ -70,7 +70,7 @@ export default function Hero() {
           />
         </h2>
       </motion.div>
-      <SocialIcons className="hero-socials" />
+      <SocialIcons className="hero-socials" fade />
     </section>
   )
 }

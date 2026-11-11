@@ -12,6 +12,8 @@ const UI = {
     navLabel: 'Principale',
     nav: { about: 'Chi sono', experience: 'Esperienze', work: 'Progetti', contact: 'Contatti' },
     langLabel: 'Lingua',
+    menuOpen: 'Apri il menu',
+    menuClose: 'Chiudi il menu',
     titles: {
       about: ['CHI', 'SONO'],
       experience: ['LE MIE', 'ESPERIENZE'],
@@ -42,6 +44,8 @@ const UI = {
     navLabel: 'Main',
     nav: { about: 'About', experience: 'Experience', work: 'Work', contact: 'Contact' },
     langLabel: 'Language',
+    menuOpen: 'Open menu',
+    menuClose: 'Close menu',
     titles: {
       about: ['ABOUT', 'ME'],
       experience: ['MY', 'EXPERIENCE'],

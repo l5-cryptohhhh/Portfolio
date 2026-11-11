@@ -3,7 +3,8 @@ import CircularText from './CircularText.jsx'
 import { profile } from '../data/profile.js'
 import './Loader.css'
 
-const DURATION = 3400 // ms: tempo del finto caricamento
+const DURATION = 3400 // ms: durata minima del caricamento
+const MAX_WAIT = 25000 // ms: oltre questo tempo la schermata se ne va comunque, anche se la scena 3D non e' pronta
 
 // Easing con qualche rallentamento, cosi' sembra un caricamento vero.
 const curve = (p) => {
@@ -16,7 +17,7 @@ const curve = (p) => {
 // Diametro dell'anello di testo: quasi tutta l'altezza della pagina (o la larghezza, se piu' stretta)
 const ringSize = () => Math.round(Math.min(window.innerHeight, window.innerWidth) * 0.92)
 
-export default function Loader({ started, onStart, onDone }) {
+export default function Loader({ started, sceneReady = true, onStart, onDone }) {
   const [size, setSize] = useState(ringSize)
   useEffect(() => {
     const onResize = () => setSize(ringSize())
@@ -27,6 +28,8 @@ export default function Loader({ started, onStart, onDone }) {
   const [leaving, setLeaving] = useState(false)
   const done = useRef(onDone)
   done.current = onDone
+  const ready = useRef(sceneReady)
+  ready.current = sceneReady
 
   useEffect(() => {
     if (!started) return
@@ -34,8 +37,10 @@ export default function Loader({ started, onStart, onDone }) {
     const t0 = performance.now()
     const tick = (now) => {
       const p = Math.min(1, (now - t0) / DURATION)
-      setPct(Math.round(curve(p) * 100))
-      if (p < 1) raf = requestAnimationFrame(tick)
+      // Il 100% arriva solo quando il personaggio 3D e' gia' disegnato: prima resta a 99%
+      const waiting = p >= 1 && !ready.current && now - t0 < MAX_WAIT
+      setPct(waiting ? 99 : Math.round(curve(p) * 100))
+      if (p < 1 || waiting) raf = requestAnimationFrame(tick)
       else {
         setLeaving(true)
         setTimeout(() => done.current(), 600)

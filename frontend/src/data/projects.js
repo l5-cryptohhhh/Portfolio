@@ -5,7 +5,7 @@
 
 export const projects = [
   {
-    title: 'Fymera One', // TODO
+    title: 'Fymera One',
     description: { it: 'Centralino e chatbot AI con dashboard', en: 'AI phone switchboard and chatbot with dashboard' },
     tools: ['Next.js', 'TypeScript', 'NestJS', 'PostgreSQL', 'Docker'],
     live: 'https://fymera.one/',
@@ -17,7 +17,7 @@ export const projects = [
     description: { it: 'Dashboard con circa 6.100 giocatori con integrazioni AI', en: 'Dashboard with about 6,100 players and AI integrations' },
     tools: ['React', 'TypeScript', 'Spring Boot', 'PostgreSQL', 'Three.js', 'Groq AI'],
     live: 'https://scoutai-web-l0yu.onrender.com',
-    repo: '',
+    repo: 'https://github.com/l5-cryptohhhh/Capstone',
     image: '/projects/scoutai.png',
   },
   {
@@ -27,29 +27,5 @@ export const projects = [
     live: 'https://l5-cryptohhhh.github.io/CodeVar/',
     repo: 'https://github.com/l5-cryptohhhh/CodeVar',
     image: '/projects/codevar.png',
-  },
-  {
-    title: 'Progetto Quattro',
-    description: { it: 'TODO: una frase su cosa fa il progetto.', en: 'TODO: one sentence about what the project does.' },
-    tools: ['PHP', 'JavaScript', 'CSS'],
-    live: '',
-    repo: '',
-    image: '',
-  },
-  {
-    title: 'Progetto Cinque',
-    description: { it: 'TODO: una frase su cosa fa il progetto.', en: 'TODO: one sentence about what the project does.' },
-    tools: ['React', 'Three.js'],
-    live: '',
-    repo: '',
-    image: '',
-  },
-  {
-    title: 'Progetto Sei',
-    description: { it: 'TODO: una frase su cosa fa il progetto.', en: 'TODO: one sentence about what the project does.' },
-    tools: ['TypeScript', 'Supabase'],
-    live: '',
-    repo: '',
-    image: '',
   },
 ]

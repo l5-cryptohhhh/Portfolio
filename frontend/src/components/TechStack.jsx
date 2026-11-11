@@ -1,7 +1,7 @@
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Physics, RigidBody, BallCollider } from '@react-three/rapier'
 import { Decal, Environment, Lightformer } from '@react-three/drei'
-import { useRef, useMemo } from 'react'
+import { useEffect, useRef, useMemo, useState } from 'react'
 import { CanvasTexture, Color, MathUtils, SRGBColorSpace, Vector3 } from 'three'
 import { tech as TECH } from '../data/tech.js'
 import { ICONS } from './techIcons.js'
@@ -140,14 +140,23 @@ export default function TechStack() {
     []
   )
   const active = useRef(false) // il mouse è sopra la sezione?
+  // Le palline sono gia' montate e pronte prima che ci arrivi; il render (e la fisica) gira solo quando la sezione e' vicina allo schermo
+  const sectionRef = useRef(null)
+  const [near, setNear] = useState(false)
+  useEffect(() => {
+    const io = new IntersectionObserver(([e]) => setNear(e.isIntersecting), { rootMargin: '600px 0px' })
+    io.observe(sectionRef.current)
+    return () => io.disconnect()
+  }, [])
   return (
     <section
+      ref={sectionRef}
       className="stack"
       onPointerEnter={() => (active.current = true)}
       onPointerLeave={() => (active.current = false)}
     >
       <Reveal as="h2" className="stack-title" lines={t.titles.stack} accent={[1]} />
-      <Canvas camera={{ position: [0, 0, 14], fov: 40 }} dpr={[1, 2]}>
+      <Canvas camera={{ position: [0, 0, 14], fov: 40 }} dpr={[1, 2]} frameloop={near ? 'always' : 'demand'}>
         <ambientLight intensity={0.7} />
         <directionalLight position={[5, 5, 5]} intensity={1.8} color="#fffdf2" />
         <Environment resolution={128}>
