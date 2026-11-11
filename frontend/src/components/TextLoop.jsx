@@ -11,6 +11,9 @@ const EDGE_PAD = 6;
 const FADE_STEPS = 8;
 const MAX_FLING = 2600;
 const MAX_BOOST = 1600;
+// Centratura verticale del testo sul nastro. dominantBaseline="central" su testo con textPath e' interpretato in modo diverso da Safari/WebKit
+// (il testo finiva piu' in alto), quindi si usa la baseline normale e uno spostamento fisso, uguale in tutti i browser (~meta' dell'altezza delle maiuscole)
+const CENTER_DY = '0.34em';
 
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
@@ -539,7 +542,7 @@ const TextLoop = ({
                 className="text-loop-text"
                 style={textStyle}
                 {...crossPaint}
-                dominantBaseline="central"
+                dy={CENTER_DY}
                 aria-hidden="true"
                 textLength={crossFit}
                 lengthAdjust="spacing"
@@ -553,7 +556,7 @@ const TextLoop = ({
                 className="text-loop-text"
                 style={textStyle}
                 {...crossPaint}
-                dominantBaseline="central"
+                dy={CENTER_DY}
                 aria-hidden="true"
                 textLength={crossFit}
                 lengthAdjust="spacing"
@@ -599,7 +602,7 @@ const TextLoop = ({
               className="text-loop-text"
               style={textStyle}
               {...mainPaint}
-              dominantBaseline="central"
+              dy={CENTER_DY}
               aria-hidden="true"
               textLength={fitLength}
               lengthAdjust="spacing"
@@ -613,7 +616,7 @@ const TextLoop = ({
               className="text-loop-text"
               style={textStyle}
               {...mainPaint}
-              dominantBaseline="central"
+              dy={CENTER_DY}
               aria-hidden="true"
               textLength={fitLength}
               lengthAdjust="spacing"
