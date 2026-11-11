@@ -44,9 +44,10 @@ export default function App({ entered = true, onReady }) {
   const lenisRef = useRef(null)
   const finePointer = useMedia('(hover: hover) and (pointer: fine)')
   const reduceMotion = useMedia('(prefers-reduced-motion: reduce)')
-  // Scena 3D: resta ferma sullo schermo dalla hero a "Cosa faccio" e la camera segue lo scroll, a ogni larghezza.
-  // Solo con "riduci movimento" sta nella hero con inquadratura fissa sul viso.
-  const sceneScroll = !reduceMotion
+  // Scena 3D: resta ferma sullo schermo dalla hero a "Cosa faccio" e la camera segue lo scroll, a ogni larghezza e anche con
+  // "riduci movimento" (molto diffuso su iPhone): li' la camera segue lo scroll senza ammorbidimenti e senza animazioni di fondo
+  // (niente digitazione ne' palpebre, niente Lenis), ma la scena resta dietro "Cosa faccio" come negli altri casi.
+  const sceneScroll = true
   const sceneTrack = useRef(null)
   const [sceneReady, setSceneReady] = useState(false)
   const onSceneReady = useCallback(() => {

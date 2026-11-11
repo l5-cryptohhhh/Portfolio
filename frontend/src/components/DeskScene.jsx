@@ -915,9 +915,21 @@ const _pos = new Vector3()
 const _look = new Vector3()
 
 // Camera: con `scrub` segue lo scroll (0 = viso nella hero, 1 = campo lungo), altrimenti resta sul viso
-function Rig({ trackRef, scrub, progress }) {
+function Rig({ trackRef, scrub, progress, reduce }) {
   const started = useRef(false)
   const stageEl = useRef(null)
+  const invalidate = useThree((st) => st.invalidate)
+  // Con "riduci movimento" il render e' a richiesta: ogni scroll o resize ne chiede uno
+  useEffect(() => {
+    if (!reduce) return
+    const go = () => invalidate()
+    window.addEventListener('scroll', go, { passive: true })
+    window.addEventListener('resize', go)
+    return () => {
+      window.removeEventListener('scroll', go)
+      window.removeEventListener('resize', go)
+    }
+  }, [reduce, invalidate])
   useFrame((state, delta) => {
     const { camera, size } = state
     let to = 0
@@ -930,7 +942,7 @@ function Rig({ trackRef, scrub, progress }) {
     }
     // Lo scroll e' gia' ammorbidito da Lenis; qui un ultimo inseguimento breve, calcolato sul tempo REALE trascorso (mai sul numero di frame):
     // con pochi fps (avvio a freddo, telefoni lenti) la camera raggiunge comunque lo scroll in una frazione di secondo invece di restare in una posa intermedia
-    progress.current = started.current && scrub ? MathUtils.damp(progress.current, to, 9, Math.min(delta, 0.5)) : to
+    progress.current = started.current && scrub && !reduce ? MathUtils.damp(progress.current, to, 9, Math.min(delta, 0.5)) : to
     if (Math.abs(progress.current - to) < 0.002) progress.current = to
     started.current = true
     const p = progress.current
@@ -1020,7 +1032,7 @@ export default function DeskScene({ trackRef, scrub, reduce, onReady }) {
       <ambientLight intensity={LOOK.ambient} />
       {/* Se il frame rate cala, scende la risoluzione e si spegne l'occlusione ambientale */}
       <PerformanceMonitor bounds={() => [LOOK.perf.minFps, 120]} onDecline={() => setSlow(true)} />
-      <Rig trackRef={trackRef} scrub={scrub && !reduce} progress={progress} />
+      <Rig trackRef={trackRef} scrub={scrub} reduce={reduce} progress={progress} />
       <Suspense fallback={null}>
         <Models animate={!reduce} progress={progress} onReady={onReady} low={low} />
         {/* Riflessi tenui generati in locale: nessun file da scaricare */}
