@@ -10,6 +10,7 @@ import Experience from './components/Experience.jsx'
 import Work from './components/Work.jsx'
 import Contact from './components/Contact.jsx'
 import LazyOnView from './components/LazyOnView.jsx'
+import WhatIDo from './components/WhatIDo.jsx' // import diretto (0,7 kB): l'altezza della sezione pinnata deve essere nota subito, non dipendere da un chunk che arriva dopo
 import useMedia from './hooks/useMedia.js'
 import { contacts } from './data/contacts.js'
 import { profile } from './data/profile.js'
@@ -17,7 +18,6 @@ import { useLang } from './i18n.jsx'
 
 // Sezioni con scene 3D: caricate a pezzi (code splitting) per alleggerire il primo caricamento
 const Hero = lazy(() => import('./components/Hero.jsx'))
-const WhatIDo = lazy(() => import('./components/WhatIDo.jsx'))
 // La scena 3D (chunk + modelli) parte a scaricarsi subito, mentre l'utente e' ancora sulla schermata PLAY
 const loadDeskScene = () => import('./components/DeskScene.jsx')
 const DeskScene = lazy(loadDeskScene)
@@ -76,6 +76,27 @@ export default function App({ entered = true, onReady }) {
     mq.addEventListener('change', close)
     return () => mq.removeEventListener('change', close)
   }, [])
+
+  // Dopo font, immagini e caricamento: ricalcola le posizioni di ScrollTrigger (due rAF dopo che il loader e' sparito, poi a ogni evento che puo' cambiare il layout)
+  useEffect(() => {
+    if (!entered) return
+    let alive = true
+    const refresh = () =>
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+          if (alive) ScrollTrigger.refresh()
+        }),
+      )
+    refresh()
+    document.fonts?.ready.then(refresh)
+    window.addEventListener('load', refresh)
+    window.addEventListener('orientationchange', refresh)
+    return () => {
+      alive = false
+      window.removeEventListener('load', refresh)
+      window.removeEventListener('orientationchange', refresh)
+    }
+  }, [entered])
 
   // Barra di avanzamento: dice a che punto sei della pagina
   const { scrollYProgress } = useScroll()
@@ -172,9 +193,7 @@ export default function App({ entered = true, onReady }) {
           <Suspense fallback={<section className="hero" id="home" />}>
             <Hero />
           </Suspense>
-          <LazyOnView>
-            <WhatIDo />
-          </LazyOnView>
+          <WhatIDo />
         </div>
         <Marquee />
         <About />

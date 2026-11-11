@@ -4,7 +4,7 @@ import { profile } from '../data/profile.js'
 import './Loader.css'
 
 const DURATION = 3400 // ms: durata minima del caricamento
-const MAX_WAIT = 25000 // ms: oltre questo tempo la schermata se ne va comunque, anche se la scena 3D non e' pronta
+const MAX_WAIT = 60000 // ms: rete lentissima o file mancante: oltre questo tempo la schermata se ne va comunque (a freddo su telefono la scena puo' impiegare piu' di 25 s)
 
 // Easing con qualche rallentamento, cosi' sembra un caricamento vero.
 const curve = (p) => {
@@ -37,7 +37,7 @@ export default function Loader({ started, sceneReady = true, onStart, onDone }) 
     const t0 = performance.now()
     const tick = (now) => {
       const p = Math.min(1, (now - t0) / DURATION)
-      // Il 100% arriva solo quando il personaggio 3D e' gia' disegnato: prima resta a 99%
+      // Il 100% arriva solo quando e' tutto pronto: modello, desk-set, texture, font e primo frame della scena. Prima resta a 99%
       const waiting = p >= 1 && !ready.current && now - t0 < MAX_WAIT
       setPct(waiting ? 99 : Math.round(curve(p) * 100))
       if (p < 1 || waiting) raf = requestAnimationFrame(tick)

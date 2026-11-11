@@ -268,7 +268,9 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; letter-spacing:
   /* Testi in basso, sui pantaloni scuri: il viso e la felpa bianca restano liberi (il personaggio e' sollevato da HERO_LIFT) */
   .hero-text { text-shadow: 0 1px 12px rgb(11 11 14 / 0.85); }
   .hero-text.left { left: 20px; bottom: 13%; }
-  .hero-text.right { left: 20px; right: auto; bottom: 5%; text-align: left; }
+  /* Tabellone a destra come prima, sopra il badge di Netlify (197x64 px in basso a destra), un po' piu' piccolo cosi' non tocca il nome */
+  .hero-text.right { right: 20px; bottom: 84px; }
+  .hero-text.right .split-flap-text.hero-flap { --split-flap-font-size: clamp(14px, 4.1vw, 20px) !important; }
   /* Social in colonna sotto il logo, dentro la hero: scorrono via con lei invece di fluttuare in basso */
   .hero-socials { flex-direction: column; left: 4vw; top: 64px; bottom: auto; gap: 18px; }
   .what { grid-template-columns: 1fr; padding-top: 96px; }

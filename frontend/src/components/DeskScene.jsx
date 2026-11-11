@@ -11,6 +11,11 @@ import { ACESFilmicToneMapping, AgXToneMapping, AnimationMixer, CanvasTexture, C
 const CHARACTER_URL = '/models/character.glb?v=6' // ?v=6: il browser non riusa la versione precedente del modello
 const DESK_URL = '/models/desk-set.glb'
 
+// Diagnosi: aggiungi ?debug all'indirizzo per vedere in console i tempi di avvio, il controllo di ossa e clip e i valori della camera
+const DEBUG = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('debug')
+const bootLog = (msg) => DEBUG && console.log(`[boot ${Math.round(performance.now())} ms] ${msg}`)
+bootLog('modulo della scena caricato (il decoder meshopt e' + "'" + ' dentro questo bundle: nessun decoder esterno)')
+
 // Scarica e interpreta i modelli appena questo modulo viene caricato (App.jsx lo carica subito, mentre c'e' il PLAY)
 useGLTF.preload(CHARACTER_URL)
 useGLTF.preload(DESK_URL)
@@ -609,6 +614,16 @@ function Models({ animate, progress, onReady, low }) {
   const announced = useRef(false)
 
   useLayoutEffect(() => {
+    if (DEBUG) {
+      const names = []
+      character.traverse((o) => names.push(o.name))
+      const need = ['EyelidLeft', 'EyelidRight', ...['Left', 'Right'].flatMap((side) => [`${side}Hand`, ...['Index', 'Middle', 'Ring', 'Pinky'].flatMap((f) => [1, 2, 3].map((n) => `${side}Hand${f}${n}`))])]
+      const missing = need.filter((n) => !names.includes(n))
+      const clips = animations.map((a) => a.name)
+      const missingClips = ['Blink', 'TypeFingers', 'Armature|clip0|baselayer'].filter((n) => !clips.includes(n))
+      bootLog(`modello decodificato e montato. Ossa/nodi ${names.length}; clip: ${clips.join(' | ')}`)
+      bootLog(missing.length || missingClips.length ? `ATTENZIONE mancano ossa: [${missing.join(', ')}] clip: [${missingClips.join(', ')}]` : 'controllo ossa e clip: tutto presente (dita 1-2-3 x 4 x 2 mani, EyelidLeft/Right, Blink, TypeFingers, baselayer)')
+    }
     rig.current = sit(character)
     headBone.current = character.getObjectByName('Head')
     hands.current = ['Left', 'Right'].map((side) => ({
@@ -751,6 +766,7 @@ function Models({ animate, progress, onReady, low }) {
     if (loaded.current && !announced.current) {
       if (++shownFrames.current >= 3) {
         announced.current = true
+        bootLog('primo frame della scena renderizzato (scena pronta)')
         onReady?.()
       } else invalidate() // con "riduci movimento" il render e' a richiesta: ne serve uno per ogni frame di riscaldamento
     }
@@ -901,15 +917,21 @@ const _look = new Vector3()
 // Camera: con `scrub` segue lo scroll (0 = viso nella hero, 1 = campo lungo), altrimenti resta sul viso
 function Rig({ trackRef, scrub, progress }) {
   const started = useRef(false)
+  const stageEl = useRef(null)
   useFrame((state, delta) => {
     const { camera, size } = state
     let to = 0
     if (scrub && trackRef.current) {
-      // La transizione dura una schermata di scroll: finisce quando "Cosa faccio" arriva in cima
+      // La transizione dura una schermata di scroll: finisce quando "Cosa faccio" arriva in cima.
+      // Si divide per l'altezza della scena (100svh, stabile): clientHeight cambia quando la barra del browser compare o sparisce
+      if (!stageEl.current || !stageEl.current.isConnected) stageEl.current = trackRef.current.querySelector('.scene-stage')
       const r = trackRef.current.getBoundingClientRect()
-      to = MathUtils.clamp(-r.top / document.documentElement.clientHeight, 0, 1)
+      to = MathUtils.clamp(-r.top / (stageEl.current?.offsetHeight || document.documentElement.clientHeight), 0, 1)
     }
-    progress.current = started.current && scrub ? MathUtils.damp(progress.current, to, 9, Math.min(delta, 0.05)) : to
+    // Lo scroll e' gia' ammorbidito da Lenis; qui un ultimo inseguimento breve, calcolato sul tempo REALE trascorso (mai sul numero di frame):
+    // con pochi fps (avvio a freddo, telefoni lenti) la camera raggiunge comunque lo scroll in una frazione di secondo invece di restare in una posa intermedia
+    progress.current = started.current && scrub ? MathUtils.damp(progress.current, to, 9, Math.min(delta, 0.5)) : to
+    if (Math.abs(progress.current - to) < 0.002) progress.current = to
     started.current = true
     const p = progress.current
     CAM_POS.getPoint(p, _pos)
@@ -928,6 +950,7 @@ function Rig({ trackRef, scrub, progress }) {
     const shiftX = oneColumn ? 0 : SHIFT * MathUtils.smoothstep(p, 0.2, 1)
     const shiftY = oneColumn ? HERO_LIFT * (1 - MathUtils.smoothstep(p, 0, 0.6)) : 0
     camera.setViewOffset(size.width, size.height, shiftX * size.width, shiftY * size.height, size.width, size.height)
+    if (DEBUG) window.__dbg = { p, to, aspect, back, size: [size.width, size.height], pos: camera.position.toArray().map((v) => +v.toFixed(3)), look: _look.toArray().map((v) => +v.toFixed(3)), docH: document.documentElement.clientHeight, innerH: window.innerHeight }
   })
   return null
 }
