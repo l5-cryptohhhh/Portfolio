@@ -22,6 +22,8 @@ export const profile = {
     },
   ],
   photo: '/me.jpg', // file in frontend/public/me.jpg. Se manca compare il riquadro con le iniziali
+  photoSet: '/me-480.webp 480w, /me-840.webp 840w', // versioni WebP piu' leggere (stessa foto); se non ci sono, resta il file sopra
+  photoSize: { w: 1000, h: 1250 }, // misure del file originale: il browser riserva lo spazio prima del caricamento
   photoAlt: { it: 'Ritratto di Manuel Nunziata', en: 'Portrait of Manuel Nunziata' }, // TODO: aggiorna con il tuo nome
   location: '', // TODO: opzionale, es. 'Roma, Italia'. Vuoto = non viene mostrato
 

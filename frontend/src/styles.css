@@ -134,7 +134,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; letter-spacing:
 .about-card { width: 100%; max-width: 420px; }
 /* Dentro la scheda metallica: la foto con un filo di bordo, nome e ruolo sotto */
 .about-card-inner { display: flex; flex-direction: column; gap: 14px; height: 100%; }
-.about-card-photo { flex: 1; min-height: 0; border-radius: 14px; overflow: hidden; background: var(--surface); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08); }
+.about-card-photo { flex: 1; min-height: 0; border-radius: 14px; overflow: hidden; background: #a79f9b; /* colore medio della foto: segnaposto finche' non e' decodificata */ box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08); }
 .about-card-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .about-card-id { text-shadow: 0 1px 3px rgb(0 0 0 / 0.55); } /* resta leggibile anche quando il riflesso del metallo schiarisce la fascia */
 .about-card-id h3 { font-size: 18px; letter-spacing: -0.01em; }
@@ -265,9 +265,10 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; letter-spacing:
   .menu-panel.is-open > :nth-child(5) { transition-delay: 0.6s; }
   .menu-panel > a { font-size: clamp(30px, 9vw, 44px); font-weight: 700; letter-spacing: -0.01em; padding: 10px 0; }
   .menu-panel .lang { margin-top: 24px; font-size: 15px; }
-  .hero-text { bottom: 30%; }
-  .hero-text.left { left: 20px; }
-  .hero-text.right { right: 20px; bottom: 18%; }
+  /* Testi in basso, sui pantaloni scuri: il viso e la felpa bianca restano liberi (il personaggio e' sollevato da HERO_LIFT) */
+  .hero-text { text-shadow: 0 1px 12px rgb(11 11 14 / 0.85); }
+  .hero-text.left { left: 20px; bottom: 13%; }
+  .hero-text.right { left: 20px; right: auto; bottom: 5%; text-align: left; }
   /* Social in colonna sotto il logo, dentro la hero: scorrono via con lei invece di fluttuare in basso */
   .hero-socials { flex-direction: column; left: 4vw; top: 64px; bottom: auto; gap: 18px; }
   .what { grid-template-columns: 1fr; padding-top: 96px; }
@@ -278,9 +279,14 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; letter-spacing:
   .scene-track.is-scroll > .hero { margin-top: -100svh; }
   /* Una schermata intera per la scrivania, con il titolo in alto; poi l'elenco le scorre sopra come un pannello pieno */
   .scene-track.is-scroll .what-3d { height: calc(100svh - 96px); }
-  .scene-track.is-scroll .what-list { background: var(--bg); margin: 0 -6vw; padding: 48px 6vw; }
+  /* L'elenco scorre sopra la scena, che resta ferma e visibile (scurita) finche' c'e' testo */
+  .scene-track.is-scroll .what-list { background: linear-gradient(to bottom, rgb(11 11 14 / 0), rgb(11 11 14 / 0.8) 90px); margin: 0 -6vw; padding: 96px 6vw 48px; }
+  /* Sotto l'ultimo testo resta un tratto di scena libera: il canvas non si stacca mentre c'e' ancora testo */
+  .scene-track.is-scroll .what { padding-bottom: 60svh; }
   .scene-track:not(.is-scroll) .what-3d { height: auto; }
   .what-3d .what-title { position: static; transform: none; }
+  /* Techstack: il canvas parte sotto il titolo, cosi' le palline non lo coprono */
+  .stack > div { position: absolute !important; top: 26%; left: 0; right: 0; bottom: 0; height: auto !important; } /* il wrapper del Canvas (r3f): il canvas si adatta alla sua misura */
   .about, .contact { grid-template-columns: 1fr; padding: 96px 6vw; }
   .experience { padding: 96px 6vw; }
   .timeline-item { grid-template-columns: 1fr; gap: 6px; }

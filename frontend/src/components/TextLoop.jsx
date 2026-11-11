@@ -207,7 +207,8 @@ const TextLoop = ({
       }
       if (!length) return;
 
-      const repsFor = total => (unitWidth > 0 ? Math.max(1, Math.round(total / unitWidth)) : 1);
+      // floor: le ripetizioni non superano mai la lunghezza del percorso, quindi textLength puo' solo allargare la spaziatura, mai comprimere le lettere (che si sovrapporrebbero)
+      const repsFor = total => (unitWidth > 0 ? Math.max(1, Math.floor(total / unitWidth + 0.02)) : 1);
       const next = { length, reps: repsFor(length), crossLength, crossReps: repsFor(crossLength) };
       setMetrics(prev =>
         prev.length === next.length &&
@@ -220,12 +221,18 @@ const TextLoop = ({
     };
 
     measure();
-    if (typeof document !== 'undefined' && document.fonts?.ready) {
-      document.fonts.ready.then(measure).catch(() => {});
+    // Il font arriva dopo la prima misura (su rete lenta anche molto dopo): si rimisura a ogni font caricato,
+    // altrimenti con il font di ripiego il conteggio delle ripetizioni e' sbagliato e le lettere si sovrappongono
+    const fonts = typeof document !== 'undefined' ? document.fonts : null;
+    if (fonts) {
+      fonts.ready.then(measure).catch(() => {});
+      fonts.load(`${fontWeight} ${fontSize}px Unbounded`).then(measure).catch(() => {});
+      fonts.addEventListener?.('loadingdone', measure);
     }
 
     return () => {
       cancelled = true;
+      fonts?.removeEventListener?.('loadingdone', measure);
     };
   }, [d, crossD, unit, fontSize, fontWeight, letterSpacing]);
 

@@ -1,7 +1,7 @@
-import { Canvas, useFrame } from '@react-three/fiber'
-import { Physics, RigidBody, BallCollider } from '@react-three/rapier'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import { Physics, RigidBody, BallCollider, CuboidCollider } from '@react-three/rapier'
 import { Decal, Environment, Lightformer } from '@react-three/drei'
-import { useEffect, useRef, useMemo, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useMemo, useState } from 'react'
 import { CanvasTexture, Color, MathUtils, SRGBColorSpace, Vector3 } from 'three'
 import { tech as TECH } from '../data/tech.js'
 import { ICONS } from './techIcons.js'
@@ -59,6 +59,42 @@ function makeTexture(item) {
   }
   img.src = `/icons/${item.icon}.svg` // se il file manca l'immagine fallisce in silenzio e resta il ripiego
   return t
+}
+
+const BALL_R = 0.7
+const GAP_X = 2.6 // distanza tra i centri in orizzontale e in verticale
+const GAP_Y = 1.9
+const FOV = 40
+const MARGIN = 0.35 // aria tra le palline piu' esterne e il bordo
+// Telefono: 3 colonne invece di 4, cosi' le palline restano grandi (circa larghezza/10 di raggio) e non sbordano
+const colsFor = () => (typeof window !== 'undefined' && window.matchMedia('(max-width: 800px)').matches ? 3 : 4)
+
+// Distanza della camera: tutta la griglia deve stare in larghezza e in altezza, anche in un canvas stretto (mai piu' vicina di 14)
+function fitDistance(size, cols, rows) {
+  const t = Math.tan((FOV * Math.PI) / 360)
+  const needW = ((cols - 1) * GAP_X) / 2 + BALL_R + MARGIN
+  const needH = ((rows - 1) * GAP_Y) / 2 + BALL_R + MARGIN
+  return Math.max(14, needW / ((size.width / size.height) * t), needH / t)
+}
+
+// Camera adattata alla larghezza + muri invisibili sul bordo visibile: le palline non escono mai dalla sezione
+function Stage({ cols, rows }) {
+  const { camera, size } = useThree()
+  const z = fitDistance(size, cols, rows)
+  useLayoutEffect(() => {
+    camera.position.z = z
+    camera.updateProjectionMatrix()
+  }, [camera, z])
+  const halfH = z * Math.tan((FOV * Math.PI) / 360)
+  const halfW = halfH * (size.width / size.height)
+  return (
+    <RigidBody type="fixed" colliders={false} key={`${halfW.toFixed(2)}-${halfH.toFixed(2)}`}>
+      <CuboidCollider args={[0.5, halfH + 1, 2]} position={[-halfW - 0.5, 0, 0]} />
+      <CuboidCollider args={[0.5, halfH + 1, 2]} position={[halfW + 0.5, 0, 0]} />
+      <CuboidCollider args={[halfW + 1, 0.5, 2]} position={[0, halfH + 0.5, 0]} />
+      <CuboidCollider args={[halfW + 1, 0.5, 2]} position={[0, -halfH - 0.5, 0]} />
+    </RigidBody>
+  )
 }
 
 const REACH = 3 // raggio d'azione del mouse
@@ -129,15 +165,17 @@ function Ball({ tech, position, active }) {
 
 export default function TechStack() {
   const { t } = useLang()
-  // Griglia 4x4 leggermente sfalsata: partono già separate e senza sovrapposizioni
+  // Griglia (4 colonne, 3 su telefono) leggermente sfalsata: partono già separate e senza sovrapposizioni
+  const [cols] = useState(colsFor)
+  const rows = Math.ceil(TECH.length / cols)
   const positions = useMemo(
     () =>
       TECH.map((_, i) => {
-        const col = i % 4
-        const row = Math.floor(i / 4)
-        return [(col - 1.5) * 2.6 + (Math.random() - 0.5) * 0.4, (1.5 - row) * 1.9 + (Math.random() - 0.5) * 0.4, 0]
+        const col = i % cols
+        const row = Math.floor(i / cols)
+        return [(col - (cols - 1) / 2) * GAP_X + (Math.random() - 0.5) * 0.4, ((rows - 1) / 2 - row) * GAP_Y + (Math.random() - 0.5) * 0.4, 0]
       }),
-    []
+    [cols, rows]
   )
   const active = useRef(false) // il mouse è sopra la sezione?
   // Le palline sono gia' montate e pronte prima che ci arrivi; il render (e la fisica) gira solo quando la sezione e' vicina allo schermo
@@ -164,6 +202,7 @@ export default function TechStack() {
           <Lightformer intensity={1} color="#c4f25b" position={[-6, 0, 3]} scale={[4, 6, 1]} />
         </Environment>
         <Physics gravity={[0, 0, 0]}>
+          <Stage cols={cols} rows={rows} />
           {TECH.map((t, i) => (
             <Ball key={t.label} tech={t} position={positions[i]} active={active} />
           ))}

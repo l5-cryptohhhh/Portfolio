@@ -135,7 +135,7 @@ const CAM_LOOK = new CatmullRomCurve3(SHOTS.map((s) => new Vector3(...s.look)))
 const SHIFT = 0.22 // nel campo lungo la scena si sposta a sinistra di questa frazione di schermo (colonna di "Cosa faccio")
 // Su schermi stretti la camera arretra perche' il soggetto stia in larghezza: fattore = valore / (larghezza / altezza), minimo 1
 const FIT = { face: 0.8, wideOneColumn: 0.9, wideTwoColumns: 1.68 }
-const HERO_LIFT = 0.1 // su telefono, nella hero il viso sale di questa frazione di schermo
+const HERO_LIFT = 0.18 // su telefono, nella hero il viso sale di questa frazione di schermo (sotto resta spazio scuro per i testi)
 const FACE = [0, 0.2, 0.1] // dall'osso Head al centro del viso
 // Dita: ogni dito batte per conto suo, con tempi e ampiezze diversi. Due dita vicine non si piegano mai insieme.
 // spread: divaricazione (rad) sull'asse Y locale dell'osso 1, uguale su mano sinistra e destra.
@@ -917,7 +917,10 @@ function Rig({ trackRef, scrub, progress }) {
     // Schermi stretti (telefono, tablet in verticale): la camera arretra per far stare il soggetto in larghezza
     const aspect = size.width / size.height
     const oneColumn = size.width <= 800
-    const back = Math.max(1, MathUtils.lerp(FIT.face, oneColumn ? FIT.wideOneColumn : FIT.wideTwoColumns, p) / aspect)
+    // Nella hero su telefono la figura occupa la stessa frazione di ALTEZZA su tutti i modelli (aspect massimo 0.47 = iPhone 14 Pro):
+    // sui telefoni piu' corti, altrimenti, la scrivania salirebbe sotto i testi. Nel campo lungo conta la larghezza.
+    const faceAspect = size.width <= 500 ? Math.min(aspect, 0.47) : aspect
+    const back = Math.max(1, MathUtils.lerp(FIT.face / faceAspect, (oneColumn ? FIT.wideOneColumn : FIT.wideTwoColumns) / aspect, p))
     camera.position.copy(_look).addScaledVector(_pos.sub(_look), back)
     camera.lookAt(_look)
     // Due colonne: viso al centro nella hero, poi la scena scivola nella colonna di sinistra.
@@ -925,12 +928,6 @@ function Rig({ trackRef, scrub, progress }) {
     const shiftX = oneColumn ? 0 : SHIFT * MathUtils.smoothstep(p, 0.2, 1)
     const shiftY = oneColumn ? HERO_LIFT * (1 - MathUtils.smoothstep(p, 0, 0.6)) : 0
     camera.setViewOffset(size.width, size.height, shiftX * size.width, shiftY * size.height, size.width, size.height)
-    // Una colonna: finita la transizione la scena non resta incollata ma sale via con la pagina, fino a sparire
-    const stage = trackRef.current?.querySelector('.scene-stage')
-    if (stage) {
-      const exit = scrub && oneColumn ? Math.max(0, -trackRef.current.getBoundingClientRect().top - document.documentElement.clientHeight) : 0
-      stage.style.transform = exit ? `translateY(${-exit}px)` : ''
-    }
   })
   return null
 }
